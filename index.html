@@ -1,241 +1,365 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BerOn ⚡️</title>
+<title>BerOn</title>
+
 <style>
-  * { box-sizing: border-box; margin:0; padding:0; }
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background: black;
+* { box-sizing: border-box; font-family: Arial; }
+
+body {
+    margin: 0;
+    background: radial-gradient(circle at top, #1a1a1a, #000);
     color: white;
-    overflow-x: hidden;
-  }
-  .container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 1rem;
-    text-align: center;
-    position: relative;
-  }
-  h1 {
-    font-size: 2rem;
-    background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 0.5rem;
-  }
-  p { color: #aaa; font-size:0.8rem; margin-bottom:1rem; }
-  .tabs {
     display: flex;
     justify-content: center;
-    margin-bottom: 1rem;
-  }
-  .tabs button {
-    background: none;
-    border: none;
-    color: #aaa;
-    font-size: 0.9rem;
-    margin: 0 0.5rem;
-    cursor: pointer;
-    transition: color 0.2s;
-  }
-  .tabs button.active { color: #6366f1; }
-  .card {
-    background: rgba(24,24,27,0.8);
-    border: 1px solid #27272a;
-    border-radius: 1rem;
-    margin: 1rem 0;
-    padding: 1rem;
-    position: relative;
-  }
-  .tap-button {
-    width: 150px;
-    height: 150px;
+    overflow-x: hidden;
+}
+
+.app {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+    padding-bottom: 120px;
+}
+
+.logo {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ff3cac, #784ba0, #2b86c5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: rgba(15,15,15,0.9);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(255, 0, 150, 0.35);
+    margin-bottom: 20px;
+}
+
+.coins { font-size: 28px; font-weight: bold; }
+
+.tap-wrap { text-align: center; position: relative; }
+
+.tap-btn {
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
-    font-size: 2rem;
-    background: linear-gradient(to bottom right, #6366f1, #a855f7, #ec4899);
     border: none;
+    font-size: 60px;
     color: white;
     cursor: pointer;
-    box-shadow: 0 0 20px rgba(139,92,246,1);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.1s;
-  }
-  .tap-button:active { transform: scale(0.9); }
-  .flying-coin {
+    background: linear-gradient(45deg, #3a1c71, #d76d77, #ffaf7b);
+    box-shadow: 0 0 100px rgba(255, 0, 150, 0.9);
+    transition: 0.12s;
+}
+
+.tap-btn:active { transform: scale(1.12); }
+
+.damage {
     position: absolute;
-    font-size: 1.5rem;
-    pointer-events: none;
-    animation: fly 0.8s ease-out forwards;
-  }
-  @keyframes fly {
-    0% { transform: translate(0,0); opacity: 1; }
-    100% { transform: translate(var(--x), var(--y)); opacity: 0; }
-  }
-  .crit {
-    position: absolute;
-    font-weight: bold;
-    color: #ec4899;
-    top: -30px;
     left: 50%;
-    transform: translateX(-50%);
-    animation: critAnim 0.6s ease-out forwards;
-  }
-  @keyframes critAnim {
-    0% { opacity: 0; transform: translateX(-50%) scale(0.5); }
-    50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
-    100% { opacity: 0; transform: translateX(-50%) scale(0.5); }
-  }
+    top: 40%;
+    font-weight: bold;
+    font-size: 22px;
+    pointer-events: none;
+    animation: dmgAnim 0.7s ease-out forwards;
+}
+
+@keyframes dmgAnim {
+    from { transform: translate(-50%, 0) scale(0.6); opacity: 1; }
+    to { transform: translate(-50%, -60px) scale(1.3); opacity: 0; }
+}
+
+.coin-float {
+    position: absolute;
+    font-size: 18px;
+    pointer-events: none;
+    animation: coinAnim 0.8s ease-out forwards;
+}
+
+@keyframes coinAnim {
+    from { transform: translateY(0) scale(0.7); opacity: 1; }
+    to { transform: translateY(-80px) scale(1.4); opacity: 0; }
+}
+
+.flash {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,0,150,0.2);
+    animation: flashAnim 0.25s;
+}
+
+@keyframes flashAnim { from {opacity:1;} to {opacity:0;} }
+
+.ring {
+    position: fixed;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255,0,150,0.7);
+    animation: ringAnim 0.6s ease-out forwards;
+}
+
+@keyframes ringAnim {
+    from { transform: scale(0.4); opacity: 1; }
+    to { transform: scale(2); opacity: 0; }
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.roulette { font-size: 42px; }
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #111;
+    border-top: 1px solid #222;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+}
+.bottom-nav button { background: none; border: none; color: white; }
 </style>
 </head>
+
 <body>
-<div class="container">
-  <h1>BerOn ⚡️</h1>
-  <p>Ultra Telegram Experience</p>
 
-  <div class="tabs">
-    <button class="active" data-tab="mine">⚡️ Mine</button>
-    <button data-tab="cases">🎰 Cases</button>
-    <button data-tab="withdraw">💸 Withdraw</button>
-    <button data-tab="pvp">⚔️ PvP</button>
-  </div>
+<div class="app">
 
-  <div id="tab-content">
-    <!-- Mine -->
-    <div class="tab" id="mine-tab">
-      <div class="card">
-        <div id="coins" style="font-size:1.5rem;">0</div>
-        <div style="font-size:0.8rem; color:#aaa;">BER Coins</div>
-      </div>
-      <button class="tap-button" id="tap-btn">⚡️</button>
-      <div id="crit-text"></div>
-      <div class="card">
-        <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#aaa;">
-          <span>Energy</span>
-          <span id="energy">1000 / 1000</span>
-        </div>
-      </div>
+    <div class="logo">BerOn</div>
+
+    <div class="card">
+        <div class="coins" id="coins">0</div>
+        <div style="font-size:12px;color:#777">Coins</div>
     </div>
 
-    <!-- Cases -->
-    <div class="tab" id="cases-tab" style="display:none;">
-      <div class="card">
-        <div style="font-weight:bold;">Cases PRO MAX 🎰</div>
-        <div style="font-size:0.8rem; color:#aaa;">Open & get insane rewards</div>
-        <button id="open-case" style="margin-top:0.5rem; padding:0.5rem 1rem; border:none; border-radius:0.5rem; background: linear-gradient(to right, #ec4899, #6366f1); color:white; cursor:pointer;">
-          🔥 OPEN CASE 🔥
-        </button>
-      </div>
+    <div class="tap-wrap">
+        <button class="tap-btn" id="tap">⚡</button>
     </div>
 
-    <!-- Withdraw -->
-    <div class="tab" id="withdraw-tab" style="display:none;">
-      <div class="card">
-        <div style="font-weight:bold;">Withdraw 💸</div>
-        <button style="margin-top:0.5rem; padding:0.5rem 1rem; opacity:0.7; cursor:not-allowed;">SOON 😈🔥</button>
-      </div>
+    <div style="text-align:center;font-size:12px;color:#777;margin-top:10px">
+        Energy: <span id="energy">1000</span><br>
+        Combo: <span id="combo">0</span> 🔥
     </div>
 
-    <!-- PvP -->
-    <div class="tab" id="pvp-tab" style="display:none;">
-      <div class="card">
-        <div style="font-weight:bold;">PvP Arena 😈</div>
-        <button id="pvp-fight" style="margin-top:0.5rem; padding:0.5rem 1rem; border:none; border-radius:0.5rem; background:#f87171; color:white; cursor:pointer;">⚔️ Fight</button>
-      </div>
+    <button onclick="openCase()" style="width:100%;margin-top:15px;height:42px;border-radius:14px;border:none">
+        🎰 DAILY GOD ROULETTE
+    </button>
+
+    <div id="timer" style="text-align:center;font-size:12px;color:#ff4ecd;margin-top:6px">
+        Ready 🔥
     </div>
-  </div>
+
+</div>
+
+<div class="bottom-nav">
+    <button>⚡ Mine</button>
+    <button>🎰 Case</button>
+    <button>😈 Ultra</button>
+</div>
+
+<div id="overlay" class="overlay" style="display:none">
+    <div style="font-size:70px">🎰</div>
+    <div class="roulette" id="roulette">---</div>
+    <div style="font-size:12px;color:#777;margin-top:10px">INSANITY SPINNING...</div>
 </div>
 
 <script>
 let coins = 0;
 let energy = 1000;
-let maxEnergy = 1000;
+let combo = 0;
 
-// Load saved progress
-const saved = JSON.parse(localStorage.getItem('beron') || '{}');
-coins = saved.coins || 0;
-energy = saved.energy || 1000;
+const rewards = [5000, 3000, 1000, 500, 400, 100];
+const DAY = 86400000;
 
-document.getElementById('coins').textContent = coins;
-document.getElementById('energy').textContent = energy + ' / ' + maxEnergy;
+const coinsEl = document.getElementById("coins");
+const energyEl = document.getElementById("energy");
+const comboEl = document.getElementById("combo");
+const rouletteEl = document.getElementById("roulette");
+const overlay = document.getElementById("overlay");
+const timerEl = document.getElementById("timer");
+const tapWrap = document.querySelector(".tap-wrap");
 
-// Tab switching
-document.querySelectorAll(".tabs button").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    const tab = btn.dataset.tab;
-    document.querySelectorAll(".tab").forEach(t => t.style.display="none");
-    document.getElementById(tab + "-tab").style.display = "block";
-  });
-});
-
-// Energy regen
 setInterval(() => {
-  energy = Math.min(maxEnergy, energy + 3);
-  document.getElementById("energy").textContent = energy + " / " + maxEnergy;
-  saveProgress();
+    energy = Math.min(1000, energy + 4);
+    update();
 }, 1000);
 
-// Save progress
-function saveProgress() {
-  localStorage.setItem('beron', JSON.stringify({ coins, energy }));
+function update() {
+    coinsEl.innerText = Math.floor(coins);
+    energyEl.innerText = energy;
+    comboEl.innerText = combo;
 }
 
-// Tap button
-document.getElementById("tap-btn").addEventListener("click", e => {
-  if(energy <= 0) return;
-  energy--;
-  let reward = 1;
-  const isMegaCrit = Math.random() < 0.05;
-  const isUltraCrit = Math.random() < 0.01;
-  if(isUltraCrit) reward *= 20;
-  else if(isMegaCrit) reward *= 5;
-  coins += reward;
+document.getElementById("tap").onclick = () => {
+    if (energy <= 0) return;
 
-  document.getElementById('coins').textContent = coins;
-  document.getElementById('energy').textContent = energy + ' / ' + maxEnergy;
-  saveProgress();
+    let reward = 1;
+    combo++;
 
-  // Crit
-  const critText = document.getElementById('crit-text');
-  if(isUltraCrit) critText.innerHTML = '<div class="crit">ULTRA CRIT 🔥</div>';
-  else if(isMegaCrit) critText.innerHTML = '<div class="crit">MEGA CRIT 😈</div>';
-  else critText.innerHTML = '';
+    const roll = Math.random();
+    let isCrit = false;
 
-  // Spawn flying coins
-  for(let i=0;i<6;i++){
-    const coin = document.createElement('div');
-    coin.textContent = '🪙';
-    coin.className = 'flying-coin';
-    const x = (Math.random()-0.5)*150 + 'px';
-    const y = -Math.random()*150 + 'px';
-    coin.style.setProperty('--x', x);
-    coin.style.setProperty('--y', y);
-    coin.style.left = '50%';
-    coin.style.top = '50%';
-    document.querySelector('.container').appendChild(coin);
-    setTimeout(()=>coin.remove(),800);
-  }
-});
+    if (roll < 0.12) { reward *= 5; isCrit = true; }
+    if (roll < 0.03) {
+        reward *= 20;
+        flash(); ring();
+        isCrit = true;
+    }
 
-// Open case
-document.getElementById("open-case").addEventListener("click", () => {
-  const reward = Math.floor(Math.random()*800+200);
-  coins += reward;
-  document.getElementById('coins').textContent = coins;
-  saveProgress();
-});
+    if (combo % 10 === 0) reward *= 3;
+    if (combo % 50 === 0) { reward *= 10; ring(); }
 
-// PvP fight
-document.getElementById("pvp-fight").addEventListener("click", () => {
-  coins += 300;
-  document.getElementById('coins').textContent = coins;
-  saveProgress();
-});
+    coins += reward;
+    energy--;
+
+    crunch();
+    damageNumber(reward, isCrit);
+    floatingCoins();
+
+    update();
+};
+
+function damageNumber(value, crit) {
+    const dmg = document.createElement("div");
+    dmg.className = "damage";
+
+    if (value >= 20) {
+        dmg.style.background = "linear-gradient(45deg,#ff3cac,#784ba0,#2b86c5)";
+        dmg.style.webkitBackgroundClip = "text";
+        dmg.style.webkitTextFillColor = "transparent";
+        dmg.innerText = "MYTHIC +" + value;
+    }
+    else if (crit) {
+        dmg.style.color = "#ff4ecd";
+        dmg.innerText = "CRIT +" + value;
+    }
+    else {
+        dmg.style.color = "#fff";
+        dmg.innerText = "+" + value;
+    }
+
+    tapWrap.appendChild(dmg);
+    setTimeout(() => dmg.remove(), 700);
+}
+
+function floatingCoins() {
+    const coin = document.createElement("div");
+    coin.className = "coin-float";
+    coin.innerText = "🪙";
+    coin.style.left = (Math.random() * 120 + 30) + "px";
+    coin.style.top = "80px";
+
+    tapWrap.appendChild(coin);
+    setTimeout(() => coin.remove(), 800);
+}
+
+function openCase() {
+    const lastOpen = localStorage.getItem("daily_case");
+    const now = Date.now();
+
+    if (lastOpen && now - lastOpen < DAY) {
+        alert("🎰 Daily Roulette на кулдауне 😈🔥");
+        return;
+    }
+
+    localStorage.setItem("daily_case", now);
+
+    overlay.style.display = "flex";
+
+    let spins = 0;
+
+    const spinAnim = setInterval(() => {
+        const r = rewards[Math.floor(Math.random() * rewards.length)];
+        rouletteEl.innerText = r;
+        spins++;
+
+        if (spins > 25) {
+            clearInterval(spinAnim);
+
+            const finalReward = rewards[Math.floor(Math.random() * rewards.length)];
+            rouletteEl.innerText = finalReward;
+
+            setTimeout(() => {
+                overlay.style.display = "none";
+                coins += finalReward;
+
+                flash(); ring();
+
+                alert(`😈 GOD DROP\n+${finalReward} Coins 🔥`);
+                update();
+            }, 400);
+        }
+    }, 80);
+}
+
+function updateTimer() {
+    const lastOpen = localStorage.getItem("daily_case");
+    const now = Date.now();
+
+    if (!lastOpen || now - lastOpen >= DAY) {
+        timerEl.innerText = "Ready 😈🔥";
+    } else {
+        const remaining = DAY - (now - lastOpen);
+        const h = Math.floor(remaining / 3600000);
+        const m = Math.floor((remaining % 3600000) / 60000);
+        const s = Math.floor((remaining % 60000) / 1000);
+
+        timerEl.innerText = `⏳ ${h}ч ${m}м ${s}с`;
+    }
+}
+
+setInterval(updateTimer, 1000);
+updateTimer();
+
+function flash() {
+    const f = document.createElement("div");
+    f.className = "flash";
+    document.body.appendChild(f);
+    setTimeout(() => f.remove(), 250);
+}
+
+function ring() {
+    const r = document.createElement("div");
+    r.className = "ring";
+    document.body.appendChild(r);
+    setTimeout(() => r.remove(), 600);
+}
+
+function crunch() {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "square";
+        o.frequency.value = 140;
+        g.gain.value = 0.05;
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.start();
+        o.stop(ctx.currentTime + 0.04);
+    } catch {}
+}
 </script>
+
 </body>
 </html>
+
