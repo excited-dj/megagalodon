@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Beron</title>
+<title>BerOn INSANITY</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
 
@@ -22,7 +22,6 @@ body{
   color:#fff;
   font-family:'Exo 2',sans-serif;
   overflow-x:hidden;
-  touch-action:pan-y;
 }
 
 .app{
@@ -467,7 +466,7 @@ body{
 
 <div class="content">
 <div class="header">
-  <div class="logo">Beron</div>
+  <div class="logo">BerOn 😈🔥</div>
 </div>
 
 <div class="stats-box">
@@ -604,13 +603,7 @@ body{
 </div>
 
 <script>
-// Disable default touch behaviors
-document.addEventListener('touchstart', function(e) {
-  if (e.target.tagName !== 'CANVAS' && !e.target.classList.contains('tap-btn')) {
-    e.preventDefault();
-  }
-}, {passive: false});
-
+// Disable only specific touch behaviors
 document.addEventListener('contextmenu', e => e.preventDefault());
 
 // Game state
@@ -661,12 +654,13 @@ updateUI();
 
 // TAP with anti-autoclicker
 const tapBtn = document.getElementById('tapBtn');
-tapBtn.addEventListener('touchstart', handleTap, {passive: true});
+tapBtn.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  handleTap(e);
+}, {passive: false});
 tapBtn.addEventListener('click', handleTap);
 
 function handleTap(e) {
-  e.preventDefault();
-  
   const now = Date.now();
   
   // Anti-autoclicker check
@@ -811,12 +805,12 @@ function startDropGame() {
     
     // Spawn drops
     dropGame.frame++;
-    if (dropGame.frame % 40 === 0) {
+    if (dropGame.frame % 30 === 0) {
       dropGame.drops.push({
         x: Math.random() * (canvas.width - 30),
         y: -30,
         type: Math.random() > 0.2 ? 'coin' : 'bomb',
-        speed: 2 + Math.random() * 3
+        speed: 3 + Math.random() * 4
       });
     }
     
@@ -927,7 +921,8 @@ function startSnakeGame() {
     food: {x: 15, y: 15},
     score: 0,
     gameOver: false,
-    speed: 150
+    speed: 100,
+    lastUpdate: Date.now()
   };
   
   document.getElementById('snakeScore').innerText = '0';
@@ -941,6 +936,13 @@ function startSnakeGame() {
   
   function gameLoop() {
     if (snakeGame.gameOver) return;
+    
+    const now = Date.now();
+    if (now - snakeGame.lastUpdate < snakeGame.speed) {
+      requestAnimationFrame(gameLoop);
+      return;
+    }
+    snakeGame.lastUpdate = now;
     
     // Update direction
     snakeGame.direction = snakeGame.nextDirection;
@@ -1004,7 +1006,7 @@ function startSnakeGame() {
     ctx.fillStyle = '#ffd700';
     ctx.fillRect(snakeGame.food.x * gridSize + 1, snakeGame.food.y * gridSize + 1, gridSize - 2, gridSize - 2);
     
-    setTimeout(gameLoop, snakeGame.speed);
+    requestAnimationFrame(gameLoop);
   }
   
   gameLoop();
@@ -1075,8 +1077,8 @@ function startFlappyGame() {
   flappyGame = {
     birdY: 250,
     birdVelocity: 0,
-    gravity: 0.5,
-    jumpPower: -10,
+    gravity: 0.6,
+    jumpPower: -9,
     pipes: [],
     score: 0,
     gameOver: false,
@@ -1103,7 +1105,7 @@ function startFlappyGame() {
     
     // Spawn pipes
     flappyGame.frame++;
-    if (flappyGame.frame % 100 === 0) {
+    if (flappyGame.frame % 80 === 0) {
       const gap = 150;
       const pipeHeight = 100 + Math.random() * 200;
       flappyGame.pipes.push({
@@ -1116,7 +1118,7 @@ function startFlappyGame() {
     
     // Update and draw pipes
     flappyGame.pipes = flappyGame.pipes.filter(pipe => {
-      pipe.x -= 3;
+      pipe.x -= 4;
       
       // Draw pipes
       ctx.fillStyle = '#00ff88';
@@ -1260,7 +1262,7 @@ function flipCard(card, index) {
         card1.style.background = 'linear-gradient(135deg,#0088ff,#00ffff)';
         card2.style.background = 'linear-gradient(135deg,#0088ff,#00ffff)';
         memoryGame.flipped = [];
-      }, 800);
+      }, 600);
     }
   }
 }
