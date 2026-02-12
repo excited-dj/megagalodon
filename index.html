@@ -2,17 +2,18 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>BerOn</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BerOn INSANITY</title>
 
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
+*{box-sizing:border-box;font-family:Arial,sans-serif;margin:0;padding:0}
 body{
-margin:0;
 background:radial-gradient(circle at top,#1a1a1a,#000);
 color:#fff;
 display:flex;
 justify-content:center;
 overflow-x:hidden;
+min-height:100vh;
 }
 .app{
 width:100%;
@@ -69,12 +70,15 @@ background:linear-gradient(45deg,#ff3cac,#784ba0);
 color:#fff;
 font-weight:bold;
 cursor:pointer;
+font-size:14px;
 }
+button.main:active{transform:scale(.98)}
 .coin{
 position:fixed;
 font-size:18px;
 pointer-events:none;
 animation:fly .8s forwards;
+z-index:1000;
 }
 @keyframes fly{
 from{transform:translateY(0) scale(1);opacity:1}
@@ -89,6 +93,7 @@ font-size:22px;
 font-weight:bold;
 color:#ff4ecd;
 animation:burst .5s forwards;
+z-index:1000;
 }
 @keyframes burst{
 from{opacity:0;transform:translateX(-50%) scale(.5)}
@@ -102,6 +107,7 @@ display:none;
 justify-content:center;
 align-items:center;
 flex-direction:column;
+z-index:2000;
 }
 .case-box{
 font-size:46px;
@@ -111,6 +117,83 @@ animation:pulse .6s infinite alternate;
 from{transform:scale(1)}
 to{transform:scale(1.2)}
 }
+.game-screen{
+display:none;
+flex-direction:column;
+align-items:center;
+}
+.game-screen.active{display:flex}
+.game-canvas-wrapper{
+position:relative;
+width:100%;
+max-width:380px;
+margin:20px auto;
+}
+canvas{
+border-radius:15px;
+box-shadow:0 0 30px rgba(0,255,100,.4);
+display:block;
+width:100%;
+background:#000;
+}
+.game-header{
+background:rgba(15,15,15,.95);
+border-radius:15px;
+padding:15px;
+margin-bottom:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+.game-controls{
+display:flex;
+gap:10px;
+margin-top:15px;
+flex-wrap:wrap;
+}
+.game-controls button{
+flex:1;
+min-width:100px;
+height:50px;
+border-radius:12px;
+border:none;
+background:linear-gradient(45deg,#11998e,#38ef7d);
+color:#fff;
+font-weight:bold;
+cursor:pointer;
+font-size:16px;
+}
+.game-controls button:active{transform:scale(.95)}
+.back-btn{
+background:linear-gradient(45deg,#666,#888)!important;
+}
+.nav-buttons{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:20px;
+}
+.nav-buttons button{
+height:50px;
+border-radius:12px;
+border:none;
+background:linear-gradient(45deg,#784ba0,#2b86c5);
+color:#fff;
+font-weight:bold;
+cursor:pointer;
+font-size:15px;
+}
+.nav-buttons button:active{transform:scale(.98)}
+.timer-display{
+color:#ff4ecd;
+font-size:24px;
+font-weight:bold;
+}
+.score-display{
+color:#38ef7d;
+font-size:20px;
+font-weight:bold;
+}
 </style>
 </head>
 <body>
@@ -119,6 +202,8 @@ to{transform:scale(1.2)}
 
 <div class="logo">BerOn INSANITY 😈🔥</div>
 
+<!-- MAIN MENU -->
+<div class="game-screen active" id="mainMenu">
 <div class="card">
 <div id="coins" style="font-size:26px">0</div>
 <div style="font-size:12px;color:#777">Coins</div>
@@ -127,18 +212,70 @@ to{transform:scale(1.2)}
 </div>
 </div>
 
-<div style="text-align:center">
-<button id="tapBtn" class="tap-btn skin1" onclick="tap()"⚡️</button>
-
-<div style="font-size:12px;color:#777;margin-top:10px">
-Energy: <span id="energy">1000</span><br>
-Combo: <span id="combo">0</span> 🔥
+<div class="nav-buttons">
+<button onclick="showScreen('tapGame')">⚡️ TAP GAME</button>
+<button onclick="showScreen('dropGame')">🎮 DROP GAME</button>
+<button onclick="showScreen('snakeGame')">🐍 SNAKE</button>
+<button onclick="exchange()">💎 EXCHANGE</button>
 </div>
 
-<button class="main" onclick="exchange()">💎 1000 → 10 BER</button>
 <button class="main" onclick="openDailyCase()">🎰 DAILY CASE</button>
 <button class="main" onclick="withdraw()">💸 Withdraw BER</button>
 </div>
+
+<!-- TAP GAME -->
+<div class="game-screen" id="tapGame">
+<div class="card">
+<div style="font-size:20px">💰 <span id="tapCoins">0</span></div>
+<div style="font-size:12px;color:#777;margin-top:5px">
+Energy: <span id="energy">1000</span><br>
+Combo: <span id="combo">0</span> 🔥
+</div>
+</div>
+
+<div style="text-align:center">
+<button id="tapBtn" class="tap-btn skin1" onclick="tap()">⚡️</button>
+</div>
+
+<div class="game-controls">
+<button class="back-btn" onclick="showScreen('mainMenu')">◀ BACK</button>
+</div>
+</div>
+
+<!-- DROP GAME -->
+<div class="game-screen" id="dropGame">
+<div class="game-header">
+<div class="timer-display">⏱️ <span id="dropTimer">00:30</span></div>
+<div class="score-display">₿ <span id="dropScore">0</span></div>
+</div>
+
+<div class="game-canvas-wrapper">
+<canvas id="dropCanvas" width="380" height="600"></canvas>
+</div>
+
+<div class="game-controls">
+<button id="dropStartBtn" onclick="startDropGame()">▶ START</button>
+<button class="back-btn" onclick="showScreen('mainMenu')">◀ BACK</button>
+</div>
+</div>
+
+<!-- SNAKE GAME -->
+<div class="game-screen" id="snakeGame">
+<div class="game-header">
+<div class="score-display">Score: <span id="snakeScore">0</span></div>
+<div style="color:#ff4ecd">High: <span id="snakeHigh">0</span></div>
+</div>
+
+<div class="game-canvas-wrapper">
+<canvas id="snakeCanvas" width="380" height="380"></canvas>
+</div>
+
+<div class="game-controls">
+<button id="snakeStartBtn" onclick="startSnakeGame()">▶ START</button>
+<button class="back-btn" onclick="showScreen('mainMenu')">◀ BACK</button>
+</div>
+</div>
+
 </div>
 
 <div class="overlay" id="overlay">
@@ -150,11 +287,13 @@ UNLOCKING INSANITY...
 
 <script>
 
+// === GLOBAL STATE ===
 let coins=parseInt(localStorage.getItem("coins"))||0;
 let ber=parseInt(localStorage.getItem("ber"))||0;
 let energy=parseInt(localStorage.getItem("energy"))||1000;
 let combo=parseInt(localStorage.getItem("combo"))||0;
 let skin=parseInt(localStorage.getItem("skin"))||1;
+let snakeHighScore=parseInt(localStorage.getItem("snakeHigh"))||0;
 
 function save(){
 localStorage.setItem("coins",coins);
@@ -162,34 +301,36 @@ localStorage.setItem("ber",ber);
 localStorage.setItem("energy",energy);
 localStorage.setItem("combo",combo);
 localStorage.setItem("skin",skin);
+localStorage.setItem("snakeHigh",snakeHighScore);
 }
 
-const coinsEl=document.getElementById("coins");
-const berEl=document.getElementById("ber");
-const energyEl=document.getElementById("energy");
-const comboEl=document.getElementById("combo");
-const overlay=document.getElementById("overlay");
-const roulette=document.getElementById("roulette");
-const app=document.getElementById("app");
+function showScreen(screen){
+document.querySelectorAll('.game-screen').forEach(s=>s.classList.remove('active'));
+document.getElementById(screen).classList.add('active');
+updateUI();
+}
+
+function updateUI(){
+document.getElementById("coins").innerText=coins;
+document.getElementById("ber").innerText=ber;
+if(document.getElementById("tapCoins"))document.getElementById("tapCoins").innerText=coins;
+if(document.getElementById("energy"))document.getElementById("energy").innerText=energy;
+if(document.getElementById("combo"))document.getElementById("combo").innerText=combo;
 const tapBtn=document.getElementById("tapBtn");
-
-function update(){
-coinsEl.innerText=coins;
-berEl.innerText=ber;
-energyEl.innerText=energy;
-comboEl.innerText=combo;
-tapBtn.className="tap-btn skin"+skin;
+if(tapBtn)tapBtn.className="tap-btn skin"+skin;
+document.getElementById("snakeHigh").innerText=snakeHighScore;
 }
 
+// Energy regeneration
 setInterval(()=>{
 energy=Math.min(1000,energy+4);
 save();
-update();
+updateUI();
 },1000);
 
 function shake(){
-app.classList.add("shake");
-setTimeout(()=>app.classList.remove("shake"),100);
+document.getElementById("app").classList.add("shake");
+setTimeout(()=>document.getElementById("app").classList.remove("shake"),100);
 }
 
 function flyingCoin(){
@@ -211,6 +352,7 @@ document.body.appendChild(burst);
 setTimeout(()=>burst.remove(),500);
 }
 
+// === TAP GAME ===
 function tap(){
 if(energy<=0)return;
 let reward=1;
@@ -225,7 +367,7 @@ comboBurst();
 shake();
 if(combo%100===0)skin=Math.min(3,skin+1);
 save();
-update();
+updateUI();
 }
 
 function exchange(){
@@ -234,7 +376,7 @@ coins-=1000;
 ber+=10;
 shake();
 save();
-update();
+updateUI();
 }
 
 function withdraw(){
@@ -247,12 +389,13 @@ if(lastOpen){
 const diff=Date.now()-parseInt(lastOpen);
 if(diff<86400000){
 const hours=Math.ceil((86400000-diff)/3600000);
-return alert("😈 Кейc недоступен\nПодожди "+hours+"ч");
+return alert("😈 Кейс недоступен\nПодожди "+hours+"ч");
 }
 }
-overlay.style.display="flex";
+document.getElementById("overlay").style.display="flex";
 const rewards=[5000,3000,1000,500,400,100];
 let spins=0;
+const roulette=document.getElementById("roulette");
 const spinInterval=setInterval(()=>{
 roulette.innerText=rewards[Math.floor(Math.random()*rewards.length)];
 spins++;
@@ -266,15 +409,324 @@ localStorage.setItem("daily_case",Date.now());
 shake();
 save();
 setTimeout(()=>{
-overlay.style.display="none";
-update();
+document.getElementById("overlay").style.display="none";
+updateUI();
 },900);
 },400);
 }
 },80);
 }
 
-update();
+// === DROP GAME ===
+const dropCanvas=document.getElementById("dropCanvas");
+const dropCtx=dropCanvas.getContext("2d");
+let dropGame={
+active:false,
+score:0,
+timeLeft:30,
+items:[],
+bombs:[],
+clicks:[],
+timer:null,
+spawnInterval:null
+};
+
+function startDropGame(){
+if(dropGame.active)return;
+dropGame.active=true;
+dropGame.score=0;
+dropGame.timeLeft=30;
+dropGame.items=[];
+dropGame.bombs=[];
+dropGame.clicks=[];
+document.getElementById("dropStartBtn").disabled=true;
+document.getElementById("dropScore").innerText="0";
+document.getElementById("dropTimer").innerText="00:30";
+
+dropGame.timer=setInterval(()=>{
+dropGame.timeLeft--;
+const mins=Math.floor(dropGame.timeLeft/60);
+const secs=dropGame.timeLeft%60;
+document.getElementById("dropTimer").innerText=
+(mins<10?"0":"")+mins+":"+(secs<10?"0":"")+secs;
+if(dropGame.timeLeft<=0)endDropGame();
+},1000);
+
+dropGame.spawnInterval=setInterval(()=>{
+if(Math.random()<0.8){
+dropGame.items.push({
+x:Math.random()*(dropCanvas.width-40)+20,
+y:-20,
+speed:2+Math.random()*2,
+size:30,
+type:'coin'
+});
+}else{
+dropGame.bombs.push({
+x:Math.random()*(dropCanvas.width-40)+20,
+y:-20,
+speed:2+Math.random()*2,
+size:30
+});
+}
+},600);
+
+requestAnimationFrame(updateDropGame);
+}
+
+function updateDropGame(){
+if(!dropGame.active)return;
+dropCtx.fillStyle="#000";
+dropCtx.fillRect(0,0,dropCanvas.width,dropCanvas.height);
+
+// Grid background
+dropCtx.strokeStyle="rgba(100,100,100,0.2)";
+dropCtx.lineWidth=1;
+for(let i=0;i<dropCanvas.width;i+=40){
+dropCtx.beginPath();
+dropCtx.moveTo(i,0);
+dropCtx.lineTo(i,dropCanvas.height);
+dropCtx.stroke();
+}
+for(let i=0;i<dropCanvas.height;i+=40){
+dropCtx.beginPath();
+dropCtx.moveTo(0,i);
+dropCtx.lineTo(dropCanvas.width,i);
+dropCtx.stroke();
+}
+
+// Update and draw items
+dropGame.items.forEach((item,i)=>{
+item.y+=item.speed;
+if(item.y>dropCanvas.height){
+dropGame.items.splice(i,1);
+return;
+}
+// Draw green star
+dropCtx.fillStyle="#7fff00";
+dropCtx.font="30px Arial";
+dropCtx.fillText("✱",item.x-15,item.y+10);
+});
+
+// Update and draw bombs
+dropGame.bombs.forEach((bomb,i)=>{
+bomb.y+=bomb.speed;
+if(bomb.y>dropCanvas.height){
+dropGame.bombs.splice(i,1);
+return;
+}
+// Draw red bomb
+dropCtx.fillStyle="#ff0000";
+dropCtx.font="30px Arial";
+dropCtx.fillText("💣",bomb.x-15,bomb.y+10);
+});
+
+// Draw click effects
+dropGame.clicks=dropGame.clicks.filter(click=>{
+click.life--;
+if(click.life<=0)return false;
+const alpha=click.life/20;
+dropCtx.fillStyle=click.color;
+dropCtx.globalAlpha=alpha;
+dropCtx.font="20px Arial";
+dropCtx.fillText("TAP!",click.x-20,click.y);
+dropCtx.globalAlpha=1;
+return true;
+});
+
+requestAnimationFrame(updateDropGame);
+}
+
+dropCanvas.addEventListener('click',(e)=>{
+if(!dropGame.active)return;
+const rect=dropCanvas.getBoundingClientRect();
+const scaleX=dropCanvas.width/rect.width;
+const scaleY=dropCanvas.height/rect.height;
+const x=(e.clientX-rect.left)*scaleX;
+const y=(e.clientY-rect.top)*scaleY;
+
+// Check items
+dropGame.items.forEach((item,i)=>{
+const dx=x-item.x;
+const dy=y-item.y;
+if(Math.sqrt(dx*dx+dy*dy)<item.size){
+dropGame.score+=100;
+document.getElementById("dropScore").innerText=dropGame.score;
+dropGame.items.splice(i,1);
+dropGame.clicks.push({x,y,life:20,color:"#7fff00"});
+}
+});
+
+// Check bombs
+dropGame.bombs.forEach((bomb,i)=>{
+const dx=x-bomb.x;
+const dy=y-bomb.y;
+if(Math.sqrt(dx*dx+dy*dy)<bomb.size){
+dropGame.score=Math.max(0,dropGame.score-200);
+document.getElementById("dropScore").innerText=dropGame.score;
+dropGame.bombs.splice(i,1);
+dropGame.clicks.push({x,y,life:20,color:"#ff0000"});
+}
+});
+});
+
+function endDropGame(){
+dropGame.active=false;
+clearInterval(dropGame.timer);
+clearInterval(dropGame.spawnInterval);
+coins+=Math.floor(dropGame.score/10);
+save();
+updateUI();
+document.getElementById("dropStartBtn").disabled=false;
+alert("🎮 GAME OVER!\n\nScore: "+dropGame.score+"\n+"+Math.floor(dropGame.score/10)+" coins!");
+}
+
+// === SNAKE GAME ===
+const snakeCanvas=document.getElementById("snakeCanvas");
+const snakeCtx=snakeCanvas.getContext("2d");
+const gridSize=20;
+const tileCount=snakeCanvas.width/gridSize;
+
+let snake={
+active:false,
+snake:[{x:10,y:10}],
+dx:1,
+dy:0,
+food:{x:15,y:15},
+score:0,
+gameLoop:null
+};
+
+function startSnakeGame(){
+if(snake.active)return;
+snake.active=true;
+snake.snake=[{x:10,y:10}];
+snake.dx=1;
+snake.dy=0;
+snake.score=0;
+spawnFood();
+document.getElementById("snakeScore").innerText="0";
+document.getElementById("snakeStartBtn").disabled=true;
+snake.gameLoop=setInterval(updateSnake,100);
+}
+
+function spawnFood(){
+snake.food={
+x:Math.floor(Math.random()*tileCount),
+y:Math.floor(Math.random()*tileCount)
+};
+}
+
+function updateSnake(){
+if(!snake.active)return;
+
+const head={x:snake.snake[0].x+snake.dx,y:snake.snake[0].y+snake.dy};
+
+// Wall collision
+if(head.x<0||head.x>=tileCount||head.y<0||head.y>=tileCount){
+endSnakeGame();
+return;
+}
+
+// Self collision
+for(let segment of snake.snake){
+if(segment.x===head.x&&segment.y===head.y){
+endSnakeGame();
+return;
+}
+}
+
+snake.snake.unshift(head);
+
+// Food collision
+if(head.x===snake.food.x&&head.y===snake.food.y){
+snake.score+=10;
+document.getElementById("snakeScore").innerText=snake.score;
+spawnFood();
+}else{
+snake.snake.pop();
+}
+
+drawSnake();
+}
+
+function drawSnake(){
+snakeCtx.fillStyle="#000";
+snakeCtx.fillRect(0,0,snakeCanvas.width,snakeCanvas.height);
+
+// Grid
+snakeCtx.strokeStyle="rgba(100,100,100,0.2)";
+for(let i=0;i<snakeCanvas.width;i+=gridSize){
+snakeCtx.beginPath();
+snakeCtx.moveTo(i,0);
+snakeCtx.lineTo(i,snakeCanvas.height);
+snakeCtx.stroke();
+}
+for(let i=0;i<snakeCanvas.height;i+=gridSize){
+snakeCtx.beginPath();
+snakeCtx.moveTo(0,i);
+snakeCtx.lineTo(snakeCanvas.width,i);
+snakeCtx.stroke();
+}
+
+// Snake
+snake.snake.forEach((segment,i)=>{
+snakeCtx.fillStyle=i===0?"#7fff00":"#38ef7d";
+snakeCtx.fillRect(segment.x*gridSize+1,segment.y*gridSize+1,gridSize-2,gridSize-2);
+});
+
+// Food
+snakeCtx.fillStyle="#ff4ecd";
+snakeCtx.fillRect(snake.food.x*gridSize+1,snake.food.y*gridSize+1,gridSize-2,gridSize-2);
+}
+
+function endSnakeGame(){
+snake.active=false;
+clearInterval(snake.gameLoop);
+if(snake.score>snakeHighScore){
+snakeHighScore=snake.score;
+save();
+}
+coins+=snake.score;
+save();
+updateUI();
+document.getElementById("snakeStartBtn").disabled=false;
+alert("🐍 GAME OVER!\n\nScore: "+snake.score+"\n+"+snake.score+" coins!");
+}
+
+// Snake controls
+document.addEventListener('keydown',(e)=>{
+if(!snake.active)return;
+switch(e.key){
+case 'ArrowUp':if(snake.dy===0){snake.dx=0;snake.dy=-1;}break;
+case 'ArrowDown':if(snake.dy===0){snake.dx=0;snake.dy=1;}break;
+case 'ArrowLeft':if(snake.dx===0){snake.dx=-1;snake.dy=0;}break;
+case 'ArrowRight':if(snake.dx===0){snake.dx=1;snake.dy=0;}break;
+}
+});
+
+// Touch controls for Snake
+let touchStartX=0,touchStartY=0;
+snakeCanvas.addEventListener('touchstart',(e)=>{
+touchStartX=e.touches[0].clientX;
+touchStartY=e.touches[0].clientY;
+});
+snakeCanvas.addEventListener('touchend',(e)=>{
+if(!snake.active)return;
+const touchEndX=e.changedTouches[0].clientX;
+const touchEndY=e.changedTouches[0].clientY;
+const dx=touchEndX-touchStartX;
+const dy=touchEndY-touchStartY;
+if(Math.abs(dx)>Math.abs(dy)){
+if(dx>0&&snake.dx===0){snake.dx=1;snake.dy=0;}
+else if(dx<0&&snake.dx===0){snake.dx=-1;snake.dy=0;}
+}else{
+if(dy>0&&snake.dy===0){snake.dx=0;snake.dy=1;}
+else if(dy<0&&snake.dy===0){snake.dx=0;snake.dy=-1;}
+}
+});
+
+updateUI();
 
 </script>
 </body>
