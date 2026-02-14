@@ -243,8 +243,11 @@ body{
 
 .tap-section{
   text-align:center;
-  margin:25px 0;
+  margin:25px auto;
   animation:fadeIn 1s ease-out 0.4s both;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
 .tap-btn{
@@ -269,6 +272,7 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
+  margin:0 auto;
 }
 
 .tap-btn::before{
@@ -898,6 +902,47 @@ body{
   transform:scale(1.05);
 }
 
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(0,0,0,0.6);
+  border-radius: 10px;
+  height: 8px;
+  outline: none;
+  border: 2px solid rgba(200,200,200,0.3);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #b8b8b8, #888);
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(200,200,200,0.5);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #b8b8b8, #888);
+  cursor: pointer;
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 0 10px rgba(200,200,200,0.5);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: linear-gradient(135deg, #d0d0d0, #a0a0a0);
+  box-shadow: 0 0 15px rgba(200,200,200,0.8);
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  background: linear-gradient(135deg, #d0d0d0, #a0a0a0);
+  box-shadow: 0 0 15px rgba(200,200,200,0.8);
+}
+
 .task-list{
   display:flex;
   flex-direction:column;
@@ -1464,6 +1509,11 @@ body{
         <div class="bet-preset" onclick="setMinesBet(1000)">$1,000</div>
         <div class="bet-preset" onclick="setMinesBet(5000)">$5,000</div>
       </div>
+    </div>
+    <div style="margin:15px 0">
+      <div style="font-size:14px;color:#ccc;margin-bottom:8px">Number of Mines:</div>
+      <input type="range" id="minesCount" min="3" max="24" value="7" style="width:100%;max-width:250px" oninput="updateMineCount()">
+      <div style="font-size:18px;color:#fff;font-weight:700;margin-top:5px"><span id="mineCountDisplay">7</span> 💣</div>
     </div>
     <button class="popup-btn" onclick="startMinesGame()" id="minesStartBtn">Start Game</button>
     <div id="minesGameArea" style="display:none">
@@ -2307,11 +2357,17 @@ updateLeaderboard();
 // MINES GAME
 let minesGame = null;
 
+function updateMineCount() {
+  const count = document.getElementById('minesCount').value;
+  document.getElementById('mineCountDisplay').innerText = count;
+}
+
 function showMinesGame() {
   document.getElementById('minesPopup').classList.add('active');
   document.getElementById('minesGameArea').style.display = 'none';
   document.getElementById('minesStartBtn').style.display = 'inline-block';
   document.getElementById('minesCloseBtn').style.display = 'inline-block';
+  updateMineCount();
 }
 
 function setMinesBet(amount) {
@@ -2320,6 +2376,8 @@ function setMinesBet(amount) {
 
 function startMinesGame() {
   const bet = parseInt(document.getElementById('minesBet').value) || 0;
+  const mineCount = parseInt(document.getElementById('minesCount').value) || 7;
+  
   if (bet <= 0) {
     alert('❌ Enter a valid bet amount!');
     return;
@@ -2342,7 +2400,7 @@ function startMinesGame() {
   
   const positions = Array.from({length: 25}, (_, i) => i);
   const bombPositions = [];
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < mineCount; i++) {
     const idx = Math.floor(Math.random() * positions.length);
     bombPositions.push(positions.splice(idx, 1)[0]);
   }
@@ -2352,7 +2410,8 @@ function startMinesGame() {
     revealed: 0,
     bombPositions,
     currentWin: bet,
-    active: true
+    active: true,
+    totalMines: mineCount
   };
   
   document.getElementById('minesCurrentWin').innerText = bet;
@@ -2389,7 +2448,10 @@ function revealMineCell(index) {
     cell.classList.add('gem');
     cell.innerText = '💎';
     minesGame.revealed++;
-    minesGame.currentWin = Math.floor(minesGame.bet * (1 + minesGame.revealed * 0.15));
+    
+    // Higher multiplier for more mines
+    const baseMultiplier = 0.10 + (minesGame.totalMines * 0.01);
+    minesGame.currentWin = Math.floor(minesGame.bet * (1 + minesGame.revealed * baseMultiplier));
     document.getElementById('minesCurrentWin').innerText = minesGame.currentWin;
   }
 }
