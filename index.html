@@ -445,10 +445,10 @@ body{
 }
 
 .case-card{
-  background:linear-gradient(135deg,rgba(60,40,80,0.9),rgba(40,60,80,0.9));
+  background:linear-gradient(135deg,rgba(30,30,45,0.95),rgba(20,20,35,0.95));
   border:3px solid;
   border-radius:20px;
-  padding:25px;
+  padding:20px;
   text-align:center;
   cursor:pointer;
   transition:all 0.4s;
@@ -461,8 +461,8 @@ body{
   content:'';
   position:absolute;
   inset:-3px;
-  background:linear-gradient(45deg,transparent,rgba(255,255,255,0.2),transparent);
-  animation:shine 4s linear infinite;
+  background:linear-gradient(45deg,transparent,rgba(255,255,255,0.15),transparent);
+  animation:shine 5s linear infinite;
   z-index:0;
 }
 
@@ -477,28 +477,49 @@ body{
 }
 
 .case-card.daily{
-  border-color:#e0e0e0;
-  box-shadow:0 10px 40px rgba(224,224,224,0.4);
+  border-color:#4ade80;
+  box-shadow:0 8px 30px rgba(74,222,128,0.35);
+}
+
+.case-card.starter{
+  border-color:#8b7355;
+  box-shadow:0 8px 30px rgba(139,115,85,0.35);
 }
 
 .case-card.bronze{
   border-color:#cd7f32;
-  box-shadow:0 10px 40px rgba(205,127,50,0.4);
+  box-shadow:0 8px 30px rgba(205,127,50,0.35);
 }
 
 .case-card.silver{
   border-color:#c0c0c0;
-  box-shadow:0 10px 40px rgba(192,192,192,0.4);
+  box-shadow:0 8px 30px rgba(192,192,192,0.35);
 }
 
 .case-card.gold{
   border-color:#ffd700;
-  box-shadow:0 10px 40px rgba(255,215,0,0.5);
+  box-shadow:0 8px 30px rgba(255,215,0,0.4);
+}
+
+.case-card.platinum{
+  border-color:#e5e4e2;
+  box-shadow:0 8px 30px rgba(229,228,226,0.4);
 }
 
 .case-card.diamond{
-  border-color:#fff;
-  box-shadow:0 10px 40px rgba(255,255,255,0.5);
+  border-color:#b9f2ff;
+  box-shadow:0 8px 30px rgba(185,242,255,0.45);
+}
+
+.case-card.legendary{
+  border-image:linear-gradient(45deg,#ff6b6b,#ffd700,#4ecdc4,#ff6b6b) 1;
+  box-shadow:0 10px 40px rgba(255,107,107,0.4);
+  animation:legendaryPulse 2s ease-in-out infinite;
+}
+
+@keyframes legendaryPulse{
+  0%,100%{transform:scale(1);box-shadow:0 10px 40px rgba(255,107,107,0.4)}
+  50%{transform:scale(1.02);box-shadow:0 12px 50px rgba(255,215,0,0.5)}
 }
 
 .case-card:hover{
@@ -506,46 +527,47 @@ body{
 }
 
 .case-icon{
-  font-size:70px;
-  margin-bottom:15px;
-  filter:drop-shadow(0 0 20px currentColor);
+  font-size:64px;
+  margin-bottom:12px;
+  filter:drop-shadow(0 0 15px currentColor);
 }
 
 .case-name{
-  font-size:26px;
+  font-size:22px;
   font-weight:700;
-  margin-bottom:12px;
+  margin-bottom:10px;
   font-family:'Poppins',sans-serif;
-  text-shadow:0 0 15px currentColor;
+  text-shadow:0 0 12px currentColor;
   color:#e0e0e0;
 }
 
 .case-price{
-  font-size:20px;
+  font-size:18px;
   color:#fff;
-  margin:12px 0;
+  margin:10px 0;
   font-weight:700;
 }
 
 .case-price-options{
   display:flex;
-  gap:10px;
+  gap:8px;
   justify-content:center;
   margin-top:10px;
+  flex-wrap:wrap;
 }
 
 .price-option{
-  background:rgba(0,0,0,0.4);
-  padding:8px 12px;
-  border-radius:10px;
-  font-size:13px;
+  background:rgba(0,0,0,0.5);
+  padding:6px 10px;
+  border-radius:8px;
+  font-size:12px;
   border:1px solid rgba(255,255,255,0.2);
 }
 
 .case-rewards{
-  font-size:14px;
-  color:#ccc;
-  margin-top:12px;
+  font-size:13px;
+  color:#bbb;
+  margin-top:10px;
 }
 
 .nav-menu{
@@ -1328,58 +1350,96 @@ input[type="range"]::-moz-range-thumb:hover {
         <div class="case-icon">🎁</div>
         <div class="case-name">Daily Case</div>
         <div class="case-price">FREE (24h)</div>
-        <div class="case-rewards">Win: $100 - $10,000</div>
+        <div class="case-rewards">Win: $50 - $500</div>
+      </div>
+    </div>
+    
+    <div class="case-card starter" onclick="showCaseOptions('starter')">
+      <div class="case-card-content">
+        <div class="case-icon">📦</div>
+        <div class="case-name">Starter Case</div>
+        <div class="case-price-options">
+          <div class="price-option">💰 $500</div>
+          <div class="price-option">⭐ 50</div>
+        </div>
+        <div class="case-rewards">Win: $200 - $2,000</div>
       </div>
     </div>
     
     <div class="case-card bronze" onclick="showCaseOptions('bronze')">
       <div class="case-card-content">
-        <div class="case-icon">📦</div>
+        <div class="case-icon">🥉</div>
         <div class="case-name">Bronze Case</div>
         <div class="case-price-options">
-          <div class="price-option">💰 $1,000</div>
-          <div class="price-option">⭐ 100</div>
+          <div class="price-option">💰 $2,000</div>
+          <div class="price-option">⭐ 200</div>
         </div>
-        <div class="case-rewards">Win: $500 - $5,000</div>
+        <div class="case-rewards">Win: $1,000 - $8,000</div>
       </div>
     </div>
     
     <div class="case-card silver" onclick="showCaseOptions('silver')">
       <div class="case-card-content">
-        <div class="case-icon">🎁</div>
+        <div class="case-icon">🥈</div>
         <div class="case-name">Silver Case</div>
         <div class="case-price-options">
-          <div class="price-option">💰 $5,000</div>
-          <div class="price-option">⭐ 500</div>
-          <div class="price-option">🔥 50</div>
+          <div class="price-option">💰 $10,000</div>
+          <div class="price-option">⭐ 1,000</div>
+          <div class="price-option">🔥 100</div>
         </div>
-        <div class="case-rewards">Win: $3,000 - $20,000</div>
+        <div class="case-rewards">Win: $5,000 - $30,000</div>
       </div>
     </div>
     
     <div class="case-card gold" onclick="showCaseOptions('gold')">
       <div class="case-card-content">
-        <div class="case-icon">💎</div>
+        <div class="case-icon">🥇</div>
         <div class="case-name">Gold Case</div>
         <div class="case-price-options">
-          <div class="price-option">💰 $20,000</div>
-          <div class="price-option">⭐ 2,000</div>
-          <div class="price-option">🔥 200</div>
+          <div class="price-option">💰 $50,000</div>
+          <div class="price-option">⭐ 5,000</div>
+          <div class="price-option">🔥 500</div>
         </div>
-        <div class="case-rewards">Win: $15,000 - $100,000</div>
+        <div class="case-rewards">Win: $25,000 - $150,000</div>
+      </div>
+    </div>
+
+    <div class="case-card platinum" onclick="showCaseOptions('platinum')">
+      <div class="case-card-content">
+        <div class="case-icon">💿</div>
+        <div class="case-name">Platinum Case</div>
+        <div class="case-price-options">
+          <div class="price-option">💰 $200,000</div>
+          <div class="price-option">⭐ 20,000</div>
+          <div class="price-option">🔥 2,000</div>
+        </div>
+        <div class="case-rewards">Win: $100,000 - $500,000</div>
       </div>
     </div>
 
     <div class="case-card diamond" onclick="showCaseOptions('diamond')">
       <div class="case-card-content">
-        <div class="case-icon">💍</div>
+        <div class="case-icon">💎</div>
         <div class="case-name">Diamond Case</div>
         <div class="case-price-options">
-          <div class="price-option">💰 $100,000</div>
-          <div class="price-option">⭐ 10,000</div>
-          <div class="price-option">🔥 1,000</div>
+          <div class="price-option">💰 $1,000,000</div>
+          <div class="price-option">⭐ 100,000</div>
+          <div class="price-option">🔥 10,000</div>
         </div>
-        <div class="case-rewards">Win: $50,000 - $500,000</div>
+        <div class="case-rewards">Win: $500,000 - $2,000,000</div>
+      </div>
+    </div>
+
+    <div class="case-card legendary" onclick="showCaseOptions('legendary')">
+      <div class="case-card-content">
+        <div class="case-icon">🌟</div>
+        <div class="case-name">Legendary Case</div>
+        <div class="case-price-options">
+          <div class="price-option">💰 $5,000,000</div>
+          <div class="price-option">⭐ 500,000</div>
+          <div class="price-option">🔥 50,000</div>
+        </div>
+        <div class="case-rewards">Win: $2,500,000 - $10,000,000</div>
       </div>
     </div>
   </div>
@@ -1432,7 +1492,7 @@ input[type="range"]::-moz-range-thumb:hover {
 </div>
 </div>
 
-<!-- Popups (same as before, keeping only the HTML structure) -->
+<!-- Popups -->
 <div class="popup" id="caseSelectionPopup">
   <div class="popup-content">
     <div class="popup-title" id="caseSelectionTitle">Select Payment</div>
@@ -1878,7 +1938,7 @@ function openDailyCase() {
   lastDailyCase = now;
   save();
   
-  const rewards = [10000, 5000, 3000, 1000, 500, 300, 100];
+  const rewards = [500, 400, 300, 200, 150, 100, 50];
   openCaseAnimation('🎁 Daily Case', rewards, 'coins');
 }
 
@@ -1892,40 +1952,66 @@ function showCaseOptions(type) {
   const options = document.getElementById('casePaymentOptions');
   
   const caseConfigs = {
-    bronze: {
-      name: '📦 Bronze Case',
+    starter: {
+      name: '📦 Starter Case',
       payments: [
-        {type: 'coins', amount: 1000, label: '💰 $1,000'},
-        {type: 'stars', amount: 100, label: '⭐ 100 Stars'}
+        {type: 'coins', amount: 500, label: '💰 $500'},
+        {type: 'stars', amount: 50, label: '⭐ 50 Stars'}
       ],
-      rewards: [5000, 3000, 2000, 1500, 1000, 800, 500]
+      rewards: [2000, 1500, 1200, 1000, 800, 600, 400, 200]
+    },
+    bronze: {
+      name: '🥉 Bronze Case',
+      payments: [
+        {type: 'coins', amount: 2000, label: '💰 $2,000'},
+        {type: 'stars', amount: 200, label: '⭐ 200 Stars'}
+      ],
+      rewards: [8000, 6000, 5000, 4000, 3000, 2500, 2000, 1000]
     },
     silver: {
-      name: '🎁 Silver Case',
+      name: '🥈 Silver Case',
       payments: [
-        {type: 'coins', amount: 5000, label: '💰 $5,000'},
-        {type: 'stars', amount: 500, label: '⭐ 500 Stars'},
-        {type: 'bertons', amount: 50, label: '🔥 50 Tons'}
+        {type: 'coins', amount: 10000, label: '💰 $10,000'},
+        {type: 'stars', amount: 1000, label: '⭐ 1,000 Stars'},
+        {type: 'bertons', amount: 100, label: '🔥 100 Tons'}
       ],
-      rewards: [20000, 15000, 10000, 8000, 5000, 4000, 3000]
+      rewards: [30000, 25000, 20000, 15000, 12000, 10000, 8000, 5000]
     },
     gold: {
-      name: '💎 Gold Case',
+      name: '🥇 Gold Case',
       payments: [
-        {type: 'coins', amount: 20000, label: '💰 $20,000'},
-        {type: 'stars', amount: 2000, label: '⭐ 2,000 Stars'},
-        {type: 'bertons', amount: 200, label: '🔥 200 Tons'}
+        {type: 'coins', amount: 50000, label: '💰 $50,000'},
+        {type: 'stars', amount: 5000, label: '⭐ 5,000 Stars'},
+        {type: 'bertons', amount: 500, label: '🔥 500 Tons'}
       ],
-      rewards: [100000, 75000, 50000, 40000, 30000, 25000, 15000]
+      rewards: [150000, 125000, 100000, 80000, 70000, 60000, 50000, 25000]
+    },
+    platinum: {
+      name: '💿 Platinum Case',
+      payments: [
+        {type: 'coins', amount: 200000, label: '💰 $200,000'},
+        {type: 'stars', amount: 20000, label: '⭐ 20,000 Stars'},
+        {type: 'bertons', amount: 2000, label: '🔥 2,000 Tons'}
+      ],
+      rewards: [500000, 400000, 350000, 300000, 250000, 200000, 150000, 100000]
     },
     diamond: {
-      name: '💍 Diamond Case',
+      name: '💎 Diamond Case',
       payments: [
-        {type: 'coins', amount: 100000, label: '💰 $100,000'},
-        {type: 'stars', amount: 10000, label: '⭐ 10,000 Stars'},
-        {type: 'bertons', amount: 1000, label: '🔥 1,000 Tons'}
+        {type: 'coins', amount: 1000000, label: '💰 $1,000,000'},
+        {type: 'stars', amount: 100000, label: '⭐ 100,000 Stars'},
+        {type: 'bertons', amount: 10000, label: '🔥 10,000 Tons'}
       ],
-      rewards: [500000, 400000, 300000, 200000, 150000, 100000, 50000]
+      rewards: [2000000, 1750000, 1500000, 1250000, 1000000, 800000, 600000, 500000]
+    },
+    legendary: {
+      name: '🌟 Legendary Case',
+      payments: [
+        {type: 'coins', amount: 5000000, label: '💰 $5,000,000'},
+        {type: 'stars', amount: 500000, label: '⭐ 500,000 Stars'},
+        {type: 'bertons', amount: 50000, label: '🔥 50,000 Tons'}
+      ],
+      rewards: [10000000, 8000000, 7000000, 6000000, 5000000, 4000000, 3500000, 2500000]
     }
   };
   
@@ -1967,7 +2053,7 @@ function closeCaseSelection() {
   document.getElementById('caseSelectionPopup').classList.remove('active');
 }
 
-// CASE OPENING ANIMATION
+// CASE OPENING ANIMATION (FIX: Reset animation state)
 function openCaseAnimation(title, rewards, rewardType = 'coins') {
   const popup = document.getElementById('casePopup');
   const titleEl = document.getElementById('caseTitle');
@@ -1975,9 +2061,13 @@ function openCaseAnimation(title, rewards, rewardType = 'coins') {
   const rewardEl = document.getElementById('caseReward');
   const claimBtn = document.getElementById('caseClaimBtn');
   
-  titleEl.innerText = title;
+  // Reset animation state
+  reelItems.style.transition = 'none';
+  reelItems.style.left = '0px';
   rewardEl.style.display = 'none';
   claimBtn.style.display = 'none';
+  
+  titleEl.innerText = title;
   popup.classList.add('active');
   
   const items = [];
@@ -1997,7 +2087,9 @@ function openCaseAnimation(title, rewards, rewardType = 'coins') {
     reelItems.appendChild(item);
   });
   
+  // Restore transition and start animation
   setTimeout(() => {
+    reelItems.style.transition = 'left 3s cubic-bezier(0.25,0.1,0.25,1)';
     const targetPos = -(winIndex * 100 - 125);
     reelItems.style.left = targetPos + 'px';
   }, 100);
@@ -2018,7 +2110,19 @@ function openCaseAnimation(title, rewards, rewardType = 'coins') {
 }
 
 function closeCase() {
-  document.getElementById('casePopup').classList.remove('active');
+  const popup = document.getElementById('casePopup');
+  const reelItems = document.getElementById('caseReelItems');
+  
+  // Reset animation completely
+  reelItems.style.transition = 'none';
+  reelItems.style.left = '0px';
+  
+  popup.classList.remove('active');
+  
+  // Restore transition for next use
+  setTimeout(() => {
+    reelItems.style.transition = '';
+  }, 50);
 }
 
 // EXCHANGE
@@ -2056,7 +2160,7 @@ function exchangeAllTokens() {
   alert(`✅ Exchanged $${(amount * 1000).toLocaleString()} for ${amount * 10} BER Tokens!`);
 }
 
-// DEPOSIT with addresses
+// DEPOSIT
 function showDeposit() {
   document.getElementById('depositPopup').classList.add('active');
 }
@@ -2237,7 +2341,7 @@ function buyUpgrade(type) {
   }
 }
 
-// TASKS with real links
+// TASKS
 const tasks = [
   {id: 1, title: '📱 Join our Telegram', reward: 10000, link: 'https://t.me/beroncrypto'},
   {id: 2, title: '📺 Subscribe to YouTube', reward: 7500, link: 'https://youtube.com/@beroncrypto'},
@@ -2285,7 +2389,7 @@ function completeTask(taskId, link) {
   }, 3000);
 }
 
-// LEADERBOARD with persistent storage
+// LEADERBOARD
 async function updateLeaderboard() {
   try {
     await window.storage.set('player_' + playerName, JSON.stringify({
@@ -2351,7 +2455,6 @@ async function loadLeaderboard() {
   }
 }
 
-// Update leaderboard on first load
 updateLeaderboard();
 
 // MINES GAME
@@ -2449,7 +2552,6 @@ function revealMineCell(index) {
     cell.innerText = '💎';
     minesGame.revealed++;
     
-    // Higher multiplier for more mines
     const baseMultiplier = 0.10 + (minesGame.totalMines * 0.01);
     minesGame.currentWin = Math.floor(minesGame.bet * (1 + minesGame.revealed * baseMultiplier));
     document.getElementById('minesCurrentWin').innerText = minesGame.currentWin;
