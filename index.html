@@ -1072,6 +1072,31 @@ input[type="range"]::-moz-range-thumb:hover {
   box-shadow:0 5px 20px rgba(224,224,224,0.3);
 }
 
+.filter-btn{
+  background:rgba(200,200,200,0.15);
+  border:2px solid rgba(200,200,200,0.4);
+  color:#d0d0d0;
+  padding:10px 16px;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:700;
+  white-space:nowrap;
+  cursor:pointer;
+  transition:all 0.3s;
+  flex-shrink:0;
+}
+
+.filter-btn.active{
+  background:linear-gradient(135deg,rgba(255,255,255,0.3),rgba(220,220,220,0.3));
+  border-color:#e0e0e0;
+  color:#fff;
+  box-shadow:0 5px 20px rgba(224,224,224,0.5);
+}
+
+.filter-btn:active{
+  transform:scale(0.95);
+}
+
 .deposit-options{
   display:flex;
   flex-direction:column;
@@ -1448,7 +1473,24 @@ input[type="range"]::-moz-range-thumb:hover {
 <!-- TASKS TAB -->
 <div class="tab-content" id="tasksTab">
   <div class="section-title" style="margin-top:20px">📋 TASKS</div>
-  <div class="task-list" id="taskList"></div>
+  
+  <div style="background:linear-gradient(135deg,rgba(60,40,80,0.8),rgba(40,60,80,0.8));border:2px solid rgba(200,200,200,0.3);border-radius:15px;padding:20px;margin:15px 0;text-align:center">
+    <div style="font-size:14px;color:#ccc;margin-bottom:8px">Total Earned from Tasks</div>
+    <div style="font-size:32px;font-weight:bold;color:#4ade80;text-shadow:0 0 20px rgba(74,222,128,0.8)" id="totalTaskEarnings">$0</div>
+  </div>
+  
+  <h3 style="color:#e0e0e0;margin:25px 0 10px 10px;font-size:18px">⚡ Daily Tasks</h3>
+  <div style="font-size:13px;color:#999;margin:0 0 10px 10px">Reset in: <span id="dailyTaskReset">--:--:--</span></div>
+  <div class="task-list" id="dailyTaskList"></div>
+  
+  <h3 style="color:#e0e0e0;margin:25px 0 10px 10px;font-size:18px">🌟 Social Tasks</h3>
+  <div class="task-list" id="socialTaskList"></div>
+  
+  <h3 style="color:#e0e0e0;margin:25px 0 10px 10px;font-size:18px">🎯 Achievement Tasks</h3>
+  <div class="task-list" id="achievementTaskList"></div>
+  
+  <h3 style="color:#e0e0e0;margin:25px 0 10px 10px;font-size:18px">💎 Special Tasks</h3>
+  <div class="task-list" id="specialTaskList"></div>
 </div>
 
 <!-- SHOP TAB -->
@@ -1465,7 +1507,19 @@ input[type="range"]::-moz-range-thumb:hover {
 <!-- LEADERBOARD TAB -->
 <div class="tab-content" id="leaderboardTab">
   <div class="section-title" style="margin-top:20px">🏆 LEADERBOARD</div>
-  <div style="text-align:center;margin:15px 0;font-size:16px;color:#fff">Your Rank: <span id="userRank">#...</span></div>
+  
+  <div style="background:linear-gradient(135deg,rgba(60,40,80,0.8),rgba(40,60,80,0.8));border:2px solid rgba(200,200,200,0.3);border-radius:15px;padding:20px;margin:15px 0;text-align:center">
+    <div style="font-size:14px;color:#ccc;margin-bottom:8px">Your Position</div>
+    <div style="font-size:36px;font-weight:bold;color:#fff;text-shadow:0 0 20px rgba(255,255,255,0.8)" id="userRank">#...</div>
+    <div style="font-size:14px;color:#4ade80;margin-top:8px" id="userScore">$0</div>
+  </div>
+  
+  <div style="display:flex;gap:10px;margin:15px 0;overflow-x:auto">
+    <button class="filter-btn active" onclick="filterLeaderboard('all')" data-filter="all">🌍 All Time</button>
+    <button class="filter-btn" onclick="filterLeaderboard('today')" data-filter="today">📅 Today</button>
+    <button class="filter-btn" onclick="filterLeaderboard('week')" data-filter="week">📊 Week</button>
+  </div>
+  
   <div class="leaderboard-list" id="leaderboardList"></div>
 </div>
 
@@ -1897,12 +1951,21 @@ function handleTap(e) {
   if (tapCombo > 10) gain *= 2;
   if (tapCombo > 20) gain *= 3;
   
+  const oldCoins = coins;
   coins += gain;
   
+  // Track taps for tasks
+  const totalTaps = (parseInt(localStorage.getItem('totalTaps')) || 0) + 1;
+  localStorage.setItem('totalTaps', totalTaps);
+  updateDailyTaskProgress('tap', 1);
+  updateDailyTaskProgress('earn', gain);
+  
   // Level up system
+  const oldLevel = level;
   const newLevel = Math.floor(coins / 10000) + 1;
   if (newLevel > level) {
     level = newLevel;
+    updateDailyTaskProgress('level', newLevel - oldLevel);
     showFloatingText('LEVEL UP! ' + level, window.innerWidth/2, window.innerHeight/2);
   }
   
@@ -2102,6 +2165,11 @@ function openCaseAnimation(title, rewards, rewardType = 'coins') {
     if (rewardType === 'coins') coins += winAmount;
     else if (rewardType === 'stars') stars += winAmount;
     else if (rewardType === 'bertons') bertons += winAmount;
+    
+    // Track cases opened for tasks
+    const casesOpened = (parseInt(localStorage.getItem('casesOpened')) || 0) + 1;
+    localStorage.setItem('casesOpened', casesOpened);
+    updateDailyTaskProgress('case', 1);
     
     save();
     updateUI();
@@ -2341,35 +2409,245 @@ function buyUpgrade(type) {
   }
 }
 
-// TASKS
-const tasks = [
-  {id: 1, title: '📱 Join our Telegram', reward: 10000, link: 'https://t.me/beroncrypto'},
-  {id: 2, title: '📺 Subscribe to YouTube', reward: 7500, link: 'https://youtube.com/@beroncrypto'},
-  {id: 3, title: '🐦 Follow on Twitter/X', reward: 5000, link: 'https://twitter.com/beroncrypto'}
-];
+// TASKS with categories
+const tasks = {
+  social: [
+    {id: 101, title: '📱 Join Telegram Channel', reward: 10000, link: 'https://t.me/beroncrypto', icon: '📱'},
+    {id: 102, title: '📺 Subscribe YouTube', reward: 7500, link: 'https://youtube.com/@beroncrypto', icon: '📺'},
+    {id: 103, title: '🐦 Follow on Twitter/X', reward: 5000, link: 'https://twitter.com/beroncrypto', icon: '🐦'},
+    {id: 104, title: '💬 Join Discord Server', reward: 8000, link: 'https://discord.gg/beroncrypto', icon: '💬'},
+    {id: 105, title: '📸 Follow on Instagram', reward: 6000, link: 'https://instagram.com/beroncrypto', icon: '📸'},
+    {id: 106, title: '🎮 Join TikTok', reward: 5000, link: 'https://tiktok.com/@beroncrypto', icon: '🎮'}
+  ],
+  achievement: [
+    {id: 201, title: '💰 Earn 100,000 Coins', reward: 25000, check: () => coins >= 100000, icon: '💰'},
+    {id: 202, title: '⚡ Reach Level 10', reward: 30000, check: () => level >= 10, icon: '⚡'},
+    {id: 203, title: '🎰 Open 10 Cases', reward: 20000, check: () => (parseInt(localStorage.getItem('casesOpened')) || 0) >= 10, icon: '🎰'},
+    {id: 204, title: '👆 Tap 1,000 Times', reward: 15000, check: () => (parseInt(localStorage.getItem('totalTaps')) || 0) >= 1000, icon: '👆'},
+    {id: 205, title: '💎 Earn 1,000 Tokens', reward: 50000, check: () => tokens >= 1000, icon: '💎'},
+    {id: 206, title: '🏆 Reach Level 25', reward: 100000, check: () => level >= 25, icon: '🏆'},
+    {id: 207, title: '⭐ Collect 10,000 Stars', reward: 75000, check: () => stars >= 10000, icon: '⭐'}
+  ],
+  special: [
+    {id: 301, title: '🎯 Complete All Social Tasks', reward: 50000, check: () => {
+      return tasks.social.every(t => completedTasks.includes(t.id));
+    }, icon: '🎯'},
+    {id: 302, title: '🔥 Play All Mini Games', reward: 40000, check: () => {
+      const played = JSON.parse(localStorage.getItem('gamesPlayed') || '[]');
+      return played.length >= 4;
+    }, icon: '🔥'},
+    {id: 303, title: '💪 Complete 10 Daily Tasks', reward: 100000, check: () => {
+      return (parseInt(localStorage.getItem('dailyTasksCompleted')) || 0) >= 10;
+    }, icon: '💪'},
+    {id: 304, title: '🌟 Invite 5 Friends', reward: 250000, check: () => {
+      return (parseInt(localStorage.getItem('friendsInvited')) || 0) >= 5;
+    }, icon: '🌟'}
+  ]
+};
+
+let dailyTasks = [];
+let totalTaskEarnings = parseInt(localStorage.getItem('totalTaskEarnings')) || 0;
+let lastDailyTaskReset = parseInt(localStorage.getItem('lastDailyTaskReset')) || 0;
+let dailyTasksCompleted = parseInt(localStorage.getItem('dailyTasksCompleted')) || 0;
+
+function generateDailyTasks() {
+  const now = Date.now();
+  const dayStart = new Date().setHours(0, 0, 0, 0);
+  
+  if (now - lastDailyTaskReset < 86400000 && lastDailyTaskReset >= dayStart) {
+    dailyTasks = JSON.parse(localStorage.getItem('dailyTasks') || '[]');
+    return;
+  }
+  
+  // Reset daily tasks
+  lastDailyTaskReset = now;
+  localStorage.setItem('lastDailyTaskReset', lastDailyTaskReset);
+  
+  const dailyTaskTemplates = [
+    {id: 'daily_tap', title: '👆 Tap 100 Times', reward: 5000, target: 100, current: 0, type: 'tap', icon: '👆'},
+    {id: 'daily_earn', title: '💰 Earn 10,000 Coins', reward: 8000, target: 10000, current: 0, type: 'earn', icon: '💰'},
+    {id: 'daily_case', title: '🎰 Open 3 Cases', reward: 12000, target: 3, current: 0, type: 'case', icon: '🎰'},
+    {id: 'daily_game', title: '🎮 Play 2 Mini Games', reward: 10000, target: 2, current: 0, type: 'game', icon: '🎮'},
+    {id: 'daily_level', title: '⚡ Gain 1 Level', reward: 15000, target: 1, current: 0, type: 'level', icon: '⚡'}
+  ];
+  
+  // Select 3 random daily tasks
+  dailyTasks = [];
+  const shuffled = dailyTaskTemplates.sort(() => Math.random() - 0.5);
+  for (let i = 0; i < 3; i++) {
+    dailyTasks.push({...shuffled[i]});
+  }
+  
+  localStorage.setItem('dailyTasks', JSON.stringify(dailyTasks));
+}
+
+function updateDailyTaskProgress(type, amount = 1) {
+  let updated = false;
+  dailyTasks = dailyTasks.map(task => {
+    if (task.type === type && task.current >= 0 && task.current < task.target) {
+      task.current = Math.min(task.current + amount, task.target);
+      updated = true;
+    }
+    return task;
+  });
+  
+  if (updated) {
+    localStorage.setItem('dailyTasks', JSON.stringify(dailyTasks));
+  }
+}
+
+function updateDailyTaskTimer() {
+  const now = Date.now();
+  const tomorrow = new Date();
+  tomorrow.setHours(24, 0, 0, 0);
+  const timeLeft = tomorrow - now;
+  
+  const hours = Math.floor(timeLeft / 3600000);
+  const mins = Math.floor((timeLeft % 3600000) / 60000);
+  const secs = Math.floor((timeLeft % 60000) / 1000);
+  
+  const timerEl = document.getElementById('dailyTaskReset');
+  if (timerEl) {
+    timerEl.innerText = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+}
 
 function loadTasks() {
-  const list = document.getElementById('taskList');
-  list.innerHTML = '';
+  generateDailyTasks();
+  updateDailyTaskTimer();
   
-  tasks.forEach(task => {
-    const item = document.createElement('div');
-    item.className = 'task-item';
+  document.getElementById('totalTaskEarnings').innerText = '$' + totalTaskEarnings.toLocaleString();
+  
+  // Load daily tasks
+  const dailyList = document.getElementById('dailyTaskList');
+  if (dailyList) {
+    dailyList.innerHTML = '';
     
-    const isCompleted = completedTasks.includes(task.id);
+    dailyTasks.forEach(task => {
+      const item = document.createElement('div');
+      item.className = 'task-item';
+      
+      const isCompleted = task.current < 0;
+      const isClaimable = task.current >= task.target && task.current >= 0;
+      const progress = task.current >= 0 ? Math.floor((task.current / task.target) * 100) : 100;
+      
+      item.innerHTML = `
+        <div class="task-info">
+          <div class="task-title">${task.icon} ${task.title}</div>
+          <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
+            <div style="flex:1;height:8px;background:rgba(0,0,0,0.6);border-radius:10px;overflow:hidden">
+              <div style="width:${progress}%;height:100%;background:linear-gradient(90deg,#4ade80,#00ff64);transition:width 0.3s"></div>
+            </div>
+            <div style="font-size:12px;color:#ccc;min-width:60px">${isCompleted ? 'Done' : task.current + '/' + task.target}</div>
+          </div>
+          <div class="task-reward" style="margin-top:5px">Reward: $${task.reward.toLocaleString()}</div>
+        </div>
+        <button class="task-btn ${isCompleted ? 'completed' : ''}" onclick="claimDailyTask('${task.id}')" ${!isClaimable || isCompleted ? 'disabled style="opacity:0.5;cursor:not-allowed"' : ''}>
+          ${isCompleted ? '✓ Done' : (isClaimable ? 'Claim' : 'Locked')}
+        </button>
+      `;
+      
+      dailyList.appendChild(item);
+    });
+  }
+  
+  // Load social tasks
+  const socialList = document.getElementById('socialTaskList');
+  if (socialList) {
+    socialList.innerHTML = '';
     
-    item.innerHTML = `
-      <div class="task-info">
-        <div class="task-title">${task.title}</div>
-        <div class="task-reward">Reward: $${task.reward.toLocaleString()}</div>
-      </div>
-      <button class="task-btn ${isCompleted ? 'completed' : ''}" onclick="completeTask(${task.id}, '${task.link}')">
-        ${isCompleted ? '✓ Done' : 'Start'}
-      </button>
-    `;
+    tasks.social.forEach(task => {
+      const item = document.createElement('div');
+      item.className = 'task-item';
+      
+      const isCompleted = completedTasks.includes(task.id);
+      
+      item.innerHTML = `
+        <div class="task-info">
+          <div class="task-title">${task.icon} ${task.title}</div>
+          <div class="task-reward">Reward: $${task.reward.toLocaleString()}</div>
+        </div>
+        <button class="task-btn ${isCompleted ? 'completed' : ''}" onclick="completeTask(${task.id}, '${task.link}')">
+          ${isCompleted ? '✓ Done' : 'Start'}
+        </button>
+      `;
+      
+      socialList.appendChild(item);
+    });
+  }
+  
+  // Load achievement tasks
+  const achievementList = document.getElementById('achievementTaskList');
+  if (achievementList) {
+    achievementList.innerHTML = '';
     
-    list.appendChild(item);
-  });
+    tasks.achievement.forEach(task => {
+      const item = document.createElement('div');
+      item.className = 'task-item';
+      
+      const isCompleted = completedTasks.includes(task.id);
+      const canClaim = !isCompleted && task.check();
+      
+      item.innerHTML = `
+        <div class="task-info">
+          <div class="task-title">${task.icon} ${task.title}</div>
+          <div class="task-reward">Reward: $${task.reward.toLocaleString()}</div>
+        </div>
+        <button class="task-btn ${isCompleted ? 'completed' : (canClaim ? 'ready' : '')}" onclick="claimAchievement(${task.id})" ${!canClaim && !isCompleted ? 'disabled style="opacity:0.5;cursor:not-allowed"' : ''}>
+          ${isCompleted ? '✓ Done' : (canClaim ? 'Claim!' : 'Locked')}
+        </button>
+      `;
+      
+      achievementList.appendChild(item);
+    });
+  }
+  
+  // Load special tasks
+  const specialList = document.getElementById('specialTaskList');
+  if (specialList) {
+    specialList.innerHTML = '';
+    
+    tasks.special.forEach(task => {
+      const item = document.createElement('div');
+      item.className = 'task-item';
+      
+      const isCompleted = completedTasks.includes(task.id);
+      const canClaim = !isCompleted && task.check();
+      
+      item.innerHTML = `
+        <div class="task-info">
+          <div class="task-title">${task.icon} ${task.title}</div>
+          <div class="task-reward">Reward: $${task.reward.toLocaleString()}</div>
+        </div>
+        <button class="task-btn ${isCompleted ? 'completed' : (canClaim ? 'ready' : '')}" onclick="claimAchievement(${task.id})" ${!canClaim && !isCompleted ? 'disabled style="opacity:0.5;cursor:not-allowed"' : ''}>
+          ${isCompleted ? '✓ Done' : (canClaim ? 'Claim!' : 'Locked')}
+        </button>
+      `;
+      
+      specialList.appendChild(item);
+    });
+  }
+}
+
+function claimDailyTask(taskId) {
+  const task = dailyTasks.find(t => t.id === taskId);
+  if (!task || task.current < task.target) return;
+  
+  coins += task.reward;
+  totalTaskEarnings += task.reward;
+  task.current = -1; // Mark as claimed
+  
+  localStorage.setItem('totalTaskEarnings', totalTaskEarnings);
+  localStorage.setItem('dailyTasks', JSON.stringify(dailyTasks));
+  
+  dailyTasksCompleted++;
+  localStorage.setItem('dailyTasksCompleted', dailyTasksCompleted);
+  
+  save();
+  updateUI();
+  loadTasks();
+  updateLeaderboard();
+  alert(`✅ Daily task completed! +$${task.reward.toLocaleString()}`);
 }
 
 function completeTask(taskId, link) {
@@ -2378,9 +2656,15 @@ function completeTask(taskId, link) {
   window.open(link, '_blank');
   
   setTimeout(() => {
-    const task = tasks.find(t => t.id === taskId);
+    const allTasks = [...tasks.social, ...tasks.achievement, ...tasks.special];
+    const task = allTasks.find(t => t.id === taskId);
+    
     coins += task.reward;
+    totalTaskEarnings += task.reward;
     completedTasks.push(taskId);
+    
+    localStorage.setItem('totalTaskEarnings', totalTaskEarnings);
+    
     save();
     updateUI();
     loadTasks();
@@ -2389,7 +2673,38 @@ function completeTask(taskId, link) {
   }, 3000);
 }
 
+function claimAchievement(taskId) {
+  if (completedTasks.includes(taskId)) return;
+  
+  const allTasks = [...tasks.achievement, ...tasks.special];
+  const task = allTasks.find(t => t.id === taskId);
+  
+  if (!task || !task.check()) {
+    alert('❌ Requirements not met yet!');
+    return;
+  }
+  
+  coins += task.reward;
+  totalTaskEarnings += task.reward;
+  completedTasks.push(taskId);
+  
+  localStorage.setItem('totalTaskEarnings', totalTaskEarnings);
+  
+  save();
+  updateUI();
+  loadTasks();
+  updateLeaderboard();
+  alert(`✅ Achievement unlocked! +$${task.reward.toLocaleString()}`);
+}
+
+// Update daily task timer every second
+setInterval(() => {
+  updateDailyTaskTimer();
+}, 1000);
+
 // LEADERBOARD
+let currentLeaderboardFilter = 'all';
+
 async function updateLeaderboard() {
   try {
     await window.storage.set('player_' + playerName, JSON.stringify({
@@ -2401,6 +2716,17 @@ async function updateLeaderboard() {
   }
 }
 
+function filterLeaderboard(filter) {
+  currentLeaderboardFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.filter === filter || btn.getAttribute('onclick').includes(filter)) {
+      btn.classList.add('active');
+    }
+  });
+  loadLeaderboard();
+}
+
 async function loadLeaderboard() {
   const list = document.getElementById('leaderboardList');
   list.innerHTML = '<div style="text-align:center;color:#ccc">Loading...</div>';
@@ -2410,6 +2736,10 @@ async function loadLeaderboard() {
     
     if (!result || !result.keys || result.keys.length === 0) {
       list.innerHTML = '<div style="text-align:center;color:#ccc">No players yet</div>';
+      const userRankEl = document.getElementById('userRank');
+      const userScoreEl = document.getElementById('userScore');
+      if (userRankEl) userRankEl.innerText = '#1';
+      if (userScoreEl) userScoreEl.innerText = '$' + coins.toLocaleString();
       return;
     }
     
@@ -2428,8 +2758,12 @@ async function loadLeaderboard() {
     
     players.sort((a, b) => b.score - a.score);
     
+    // Update user info
     const userIndex = players.findIndex(p => p.name === playerName);
-    document.getElementById('userRank').innerText = userIndex >= 0 ? '#' + (userIndex + 1) : '#999';
+    const userRankEl = document.getElementById('userRank');
+    const userScoreEl = document.getElementById('userScore');
+    if (userRankEl) userRankEl.innerText = userIndex >= 0 ? '#' + (userIndex + 1) : '#999';
+    if (userScoreEl) userScoreEl.innerText = '$' + coins.toLocaleString();
     
     list.innerHTML = '';
     players.slice(0, 100).forEach((player, i) => {
@@ -2439,10 +2773,17 @@ async function loadLeaderboard() {
       const medals = ['🥇', '🥈', '🥉'];
       const rankDisplay = i < 3 ? medals[i] : `#${i + 1}`;
       
+      // Calculate rank badge
+      let rankBadge = '🥉';
+      if (player.score > 5000000) rankBadge = '💎';
+      else if (player.score > 1000000) rankBadge = '🏆';
+      else if (player.score > 500000) rankBadge = '🥇';
+      else if (player.score > 100000) rankBadge = '🥈';
+      
       item.innerHTML = `
         <div class="leaderboard-rank">${rankDisplay}</div>
         <div class="leaderboard-info">
-          <div class="leaderboard-name">${player.name}</div>
+          <div class="leaderboard-name">${rankBadge} ${player.name}</div>
           <div class="leaderboard-score">$${player.score.toLocaleString()}</div>
         </div>
       `;
@@ -2477,6 +2818,15 @@ function setMinesBet(amount) {
   document.getElementById('minesBet').value = amount;
 }
 
+function trackGamePlayed(gameName) {
+  const gamesPlayed = JSON.parse(localStorage.getItem('gamesPlayed') || '[]');
+  if (!gamesPlayed.includes(gameName)) {
+    gamesPlayed.push(gameName);
+    localStorage.setItem('gamesPlayed', JSON.stringify(gamesPlayed));
+  }
+  updateDailyTaskProgress('game', 1);
+}
+
 function startMinesGame() {
   const bet = parseInt(document.getElementById('minesBet').value) || 0;
   const mineCount = parseInt(document.getElementById('minesCount').value) || 7;
@@ -2489,6 +2839,8 @@ function startMinesGame() {
     alert('❌ Not enough money!');
     return;
   }
+  
+  trackGamePlayed('mines');
   
   coins -= bet;
   save();
@@ -2612,6 +2964,8 @@ function flipCoin() {
     return;
   }
   
+  trackGamePlayed('coinflip');
+  
   coins -= bet;
   save();
   updateUI();
@@ -2682,6 +3036,8 @@ function startDropGameWithBet() {
     alert('❌ Not enough money!');
     return;
   }
+  
+  trackGamePlayed('drop');
   
   coins -= bet;
   save();
@@ -2853,6 +3209,8 @@ function startSnakeGameWithBet() {
     alert('❌ Not enough money!');
     return;
   }
+  
+  trackGamePlayed('snake');
   
   coins -= bet;
   save();
