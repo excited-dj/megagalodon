@@ -739,12 +739,16 @@ body{
 
 .case-reel-item{
   min-width:100px;
+  width:100px;
   height:100%;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:48px;
+  font-size:32px;
+  font-weight:700;
+  color:#fff;
   border-right:2px solid rgba(200,200,200,0.2);
+  flex-shrink:0;
 }
 
 .case-reel-pointer{
@@ -823,6 +827,7 @@ body{
 .bet-presets{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap}
 .bet-preset{padding:8px 16px;background:rgba(200,200,200,0.15);border:2px solid rgba(200,200,200,0.4);border-radius:10px;color:#d0d0d0;cursor:pointer;transition:all 0.3s;font-weight:700}
 .bet-preset:hover{background:rgba(200,200,200,0.2);transform:scale(1.05)}
+.bet-preset.active{background:rgba(74,222,128,0.3);border-color:#4ade80;color:#4ade80}
 
 input[type="range"]{-webkit-appearance:none;appearance:none;background:rgba(0,0,0,0.6);border-radius:10px;height:8px;outline:none;border:2px solid rgba(200,200,200,0.3)}
 input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;background:linear-gradient(135deg,#b8b8b8,#888);cursor:pointer;border-radius:50%;box-shadow:0 0 10px rgba(200,200,200,0.5)}
@@ -874,6 +879,11 @@ input[type="range"]::-moz-range-thumb{width:20px;height:20px;background:linear-g
 .welcome-text{font-size:18px;color:#e0e0e0;line-height:1.6;margin-bottom:30px}
 .welcome-btn{background:linear-gradient(135deg,#b8b8b8,#888);color:#fff;border:none;padding:16px 40px;border-radius:20px;font-size:18px;font-weight:bold;cursor:pointer;box-shadow:0 10px 30px rgba(180,180,180,0.5);transition:all 0.3s;font-family:'Poppins',sans-serif}
 .welcome-btn:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(180,180,180,0.6)}
+
+.multi-win-results{display:grid;grid-template-columns:1fr;gap:10px;margin:20px 0;max-height:300px;overflow-y:auto}
+.multi-win-item{background:rgba(0,0,0,0.6);border:2px solid rgba(74,222,128,0.5);border-radius:12px;padding:15px;display:flex;justify-content:space-between;align-items:center}
+.multi-win-item-number{font-size:18px;font-weight:700;color:#4ade80}
+.multi-win-item-amount{font-size:24px;font-weight:bold;color:#fff}
 </style>
 </head>
 <body>
@@ -1197,7 +1207,6 @@ input[type="range"]::-moz-range-thumb{width:20px;height:20px;background:linear-g
 <div class="popup" id="casePreviewPopup">
   <div class="popup-content">
     <div class="popup-title" id="previewTitle">📦 Case Preview</div>
-    <div style="margin:15px 0;font-size:16px;color:#ccc">What can drop:</div>
     <div id="rewardsList" style="max-height:300px;overflow-y:auto;margin:15px 0"></div>
     <button class="popup-btn" onclick="showPaymentOptions()" style="background:linear-gradient(135deg,#4ade80,#22c55e)">🛒 Buy Case</button>
     <button class="popup-btn" onclick="closeCasePreview()">Cancel</button>
@@ -1206,7 +1215,25 @@ input[type="range"]::-moz-range-thumb{width:20px;height:20px;background:linear-g
 
 <div class="popup" id="paymentPopup">
   <div class="popup-content">
-    <div class="popup-title">💳 Select Currency</div>
+    <div class="popup-title">💳 Select Payment</div>
+    
+    <div style="margin:20px 0">
+      <div style="font-size:16px;color:#ccc;margin-bottom:10px">📦 Number of Cases:</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:15px">
+        <button class="bet-preset active" onclick="selectCaseQuantity(1)" data-qty="1">1x</button>
+        <button class="bet-preset" onclick="selectCaseQuantity(2)" data-qty="2">2x</button>
+        <button class="bet-preset" onclick="selectCaseQuantity(3)" data-qty="3">3x</button>
+        <button class="bet-preset" onclick="selectCaseQuantity(4)" data-qty="4">4x</button>
+        <button class="bet-preset" onclick="selectCaseQuantity(5)" data-qty="5">5x</button>
+      </div>
+      <div style="font-size:18px;color:#4ade80;margin:15px 0;font-weight:700;text-shadow:0 0 15px rgba(74,222,128,0.8)">
+        Selected: <span id="selectedQuantity">1</span> case(s)
+      </div>
+      <div style="font-size:14px;color:#ccc;margin-bottom:20px">
+        Total cost: <span id="totalCostDisplay" style="color:#fff;font-weight:700">--</span>
+      </div>
+    </div>
+    
     <div id="paymentOptions"></div>
     <button class="popup-btn" onclick="closePaymentPopup()">Cancel</button>
   </div>
@@ -1214,16 +1241,26 @@ input[type="range"]::-moz-range-thumb{width:20px;height:20px;background:linear-g
 
 <div class="popup" id="caseOpeningPopup">
   <div class="popup-content">
-    <div class="popup-title" id="openingTitle">🎰 Opening case...</div>
-    <div class="case-reel">
-      <div class="case-reel-items" id="caseReelItems"></div>
-      <div class="case-reel-pointer"></div>
+    <div class="popup-title" id="openingTitle">🎰 Opening cases...</div>
+    <div id="singleCaseReel" style="display:none">
+      <div class="case-reel">
+        <div class="case-reel-items" id="caseReelItems"></div>
+        <div class="case-reel-pointer"></div>
+      </div>
+    </div>
+    <div id="multiCaseResults" style="display:none">
+      <div style="font-size:16px;color:#ccc;margin-bottom:15px">🎉 Your Wins:</div>
+      <div class="multi-win-results" id="multiWinList"></div>
+      <div style="margin-top:20px;padding:15px;background:rgba(74,222,128,0.2);border:2px solid #4ade80;border-radius:15px">
+        <div style="font-size:16px;color:#ccc;margin-bottom:5px">Total Won:</div>
+        <div class="popup-reward" style="font-size:42px;margin:10px 0" id="totalWinAmount">$0</div>
+      </div>
     </div>
     <div id="winResult" style="display:none;margin-top:20px">
       <div style="font-size:24px;color:#4ade80;font-weight:bold;margin-bottom:10px">🎉 You won!</div>
       <div class="popup-reward" id="winAmount">$0</div>
     </div>
-    <button class="popup-btn" id="claimWinBtn" onclick="claimWin()" style="display:none;background:linear-gradient(135deg,#4ade80,#22c55e)">✅ Claim</button>
+    <button class="popup-btn" id="claimWinBtn" onclick="claimWin()" style="display:none;background:linear-gradient(135deg,#4ade80,#22c55e)">✅ Claim All</button>
   </div>
 </div>
 
@@ -1395,6 +1432,8 @@ let hasSeenWelcome = localStorage.getItem('hasSeenWelcome') === 'true';
 
 let currentCaseType = '';
 let currentWinAmount = 0;
+let selectedCaseQuantity = 1;
+let multiCaseWins = [];
 
 // CASE CONFIGS (10x cheaper + more NFT cases)
 const caseConfigs = {
@@ -1841,7 +1880,7 @@ function showCasePreview(caseType) {
     
     item.innerHTML = `
       <div style="font-size:18px;font-weight:700">${name}</div>
-      <div style="font-size:13px;color:#ccc">${rarityText} - ${reward.chance}% chance</div>
+      <div style="font-size:13px;color:#ccc">${rarityText}</div>
     `;
     
     rewardsList.appendChild(item);
@@ -1854,8 +1893,46 @@ function closeCasePreview() {
   document.getElementById('casePreviewPopup').classList.remove('active');
 }
 
+function selectCaseQuantity(qty) {
+  selectedCaseQuantity = qty;
+  document.getElementById('selectedQuantity').innerText = qty;
+  
+  // Update button states
+  document.querySelectorAll('.bet-preset[data-qty]').forEach(btn => {
+    btn.classList.remove('active');
+    if (parseInt(btn.dataset.qty) === qty) {
+      btn.classList.add('active');
+    }
+  });
+  
+  // Update total cost display
+  updateTotalCostDisplay();
+}
+
+function updateTotalCostDisplay() {
+  const config = caseConfigs[currentCaseType];
+  if (!config) return;
+  
+  const costDisplay = document.getElementById('totalCostDisplay');
+  if (!costDisplay) return;
+  
+  const costs = config.payments.map(p => {
+    return `${p.label.split(' ')[0]} ${(p.amount * selectedCaseQuantity).toLocaleString()}`;
+  }).join(' or ');
+  
+  costDisplay.innerText = costs;
+}
+
 function showPaymentOptions() {
   closeCasePreview();
+  
+  // Reset to 1 case when opening payment popup
+  selectedCaseQuantity = 1;
+  document.getElementById('selectedQuantity').innerText = '1';
+  document.querySelectorAll('.bet-preset[data-qty]').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.qty === '1') btn.classList.add('active');
+  });
   
   const config = caseConfigs[currentCaseType];
   const paymentOptions = document.getElementById('paymentOptions');
@@ -1869,6 +1946,7 @@ function showPaymentOptions() {
     paymentOptions.appendChild(btn);
   });
   
+  updateTotalCostDisplay();
   document.getElementById('paymentPopup').classList.add('active');
 }
 
@@ -1878,25 +1956,37 @@ function closePaymentPopup() {
 
 function purchaseCase(payment) {
   const currencies = {coins, stars, bertons};
+  const totalCost = payment.amount * selectedCaseQuantity;
   
-  if (currencies[payment.type] < payment.amount) {
-    alert('❌ Not enough! Need ' + payment.label);
+  if (currencies[payment.type] < totalCost) {
+    alert(`❌ Not enough! Need ${payment.label.split(' ')[0]} ${totalCost.toLocaleString()}`);
     return;
   }
   
-  if (payment.type === 'coins') coins -= payment.amount;
-  else if (payment.type === 'stars') stars -= payment.amount;
-  else if (payment.type === 'bertons') bertons -= payment.amount;
+  if (payment.type === 'coins') coins -= totalCost;
+  else if (payment.type === 'stars') stars -= totalCost;
+  else if (payment.type === 'bertons') bertons -= totalCost;
   
-  localStorage.setItem('coins', coins);
+  save();
   updateUI();
   closePaymentPopup();
   
   const config = caseConfigs[currentCaseType];
-  const winAmount = selectReward(config.rewards);
-  currentWinAmount = winAmount.amount;
   
-  openCaseAnimation(config.name, config.rewards.map(r => r.amount), winAmount.amount);
+  // Open multiple cases
+  multiCaseWins = [];
+  for (let i = 0; i < selectedCaseQuantity; i++) {
+    const winAmount = selectReward(config.rewards);
+    multiCaseWins.push(winAmount.amount);
+  }
+  
+  currentWinAmount = multiCaseWins.reduce((a, b) => a + b, 0);
+  
+  if (selectedCaseQuantity === 1) {
+    openCaseAnimation(config.name, config.rewards.map(r => r.amount), multiCaseWins[0]);
+  } else {
+    openMultipleCases(config.name, multiCaseWins);
+  }
 }
 
 function selectReward(rewards) {
@@ -1917,10 +2007,14 @@ function openCaseAnimation(title, possibleRewards, winAmount) {
   const reelItems = document.getElementById('caseReelItems');
   const winResult = document.getElementById('winResult');
   const claimBtn = document.getElementById('claimWinBtn');
+  const singleReel = document.getElementById('singleCaseReel');
+  const multiResults = document.getElementById('multiCaseResults');
   
   titleEl.innerText = title;
   winResult.style.display = 'none';
   claimBtn.style.display = 'none';
+  singleReel.style.display = 'block';
+  multiResults.style.display = 'none';
   popup.classList.add('active');
   
   const items = [];
@@ -1935,7 +2029,8 @@ function openCaseAnimation(title, possibleRewards, winAmount) {
   items.forEach(amount => {
     const item = document.createElement('div');
     item.className = 'case-reel-item';
-    item.innerText = '$' + amount.toLocaleString();
+    const displayAmount = amount >= 1000 ? '$' + (amount/1000).toFixed(0) + 'k' : '$' + amount;
+    item.innerText = displayAmount;
     reelItems.appendChild(item);
   });
   
@@ -1945,7 +2040,8 @@ function openCaseAnimation(title, possibleRewards, winAmount) {
   
   setTimeout(() => {
     reelItems.style.transition = 'transform 3s cubic-bezier(0.25,0.1,0.25,1)';
-    reelItems.style.transform = `translateX(${-(winIndex * 100 - 125)}px)`;
+    const offset = -(winIndex * 100 - 125);
+    reelItems.style.transform = `translateX(${offset}px)`;
   }, 100);
   
   setTimeout(() => {
@@ -1959,9 +2055,60 @@ function openCaseAnimation(title, possibleRewards, winAmount) {
   }, 3500);
 }
 
+function openMultipleCases(title, wins) {
+  const popup = document.getElementById('caseOpeningPopup');
+  const titleEl = document.getElementById('openingTitle');
+  const claimBtn = document.getElementById('claimWinBtn');
+  const singleReel = document.getElementById('singleCaseReel');
+  const multiResults = document.getElementById('multiCaseResults');
+  const multiWinList = document.getElementById('multiWinList');
+  const totalWinEl = document.getElementById('totalWinAmount');
+  
+  titleEl.innerText = `${title} x${wins.length}`;
+  singleReel.style.display = 'none';
+  multiResults.style.display = 'block';
+  claimBtn.style.display = 'none';
+  popup.classList.add('active');
+  
+  multiWinList.innerHTML = '';
+  
+  // Show results with delay
+  wins.forEach((winAmount, index) => {
+    setTimeout(() => {
+      const item = document.createElement('div');
+      item.className = 'multi-win-item';
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(20px)';
+      item.innerHTML = `
+        <div class="multi-win-item-number">Case #${index + 1}</div>
+        <div class="multi-win-item-amount">$${winAmount.toLocaleString()}</div>
+      `;
+      multiWinList.appendChild(item);
+      
+      // Animate in
+      setTimeout(() => {
+        item.style.transition = 'all 0.3s ease-out';
+        item.style.opacity = '1';
+        item.style.transform = 'translateY(0)';
+      }, 50);
+    }, index * 300);
+  });
+  
+  // Show total and claim button
+  setTimeout(() => {
+    const totalWin = wins.reduce((a, b) => a + b, 0);
+    totalWinEl.innerText = '$' + totalWin.toLocaleString();
+    claimBtn.style.display = 'inline-block';
+    
+    const casesOpened = (parseInt(localStorage.getItem('casesOpened')) || 0) + wins.length;
+    localStorage.setItem('casesOpened', casesOpened);
+    updateDailyTaskProgress('case', wins.length);
+  }, wins.length * 300 + 500);
+}
+
 function claimWin() {
   coins += currentWinAmount;
-  localStorage.setItem('coins', coins);
+  save();
   updateUI();
   updateLeaderboard();
   
@@ -1970,6 +2117,10 @@ function claimWin() {
   const reelItems = document.getElementById('caseReelItems');
   reelItems.style.transition = 'none';
   reelItems.style.transform = 'translateX(0px)';
+  
+  // Reset quantity selector
+  selectedCaseQuantity = 1;
+  multiCaseWins = [];
 }
 
 function showExchange() {
@@ -2457,14 +2608,7 @@ setInterval(() => {
 let currentLeaderboardFilter = 'all';
 
 async function updateLeaderboard() {
-  try {
-    await window.storage.set('player_' + playerName, JSON.stringify({
-      name: playerName,
-      score: coins
-    }), true);
-  } catch (error) {
-    console.error('Failed to update leaderboard:', error);
-  }
+  // Leaderboard functionality removed
 }
 
 function filterLeaderboard(filter) {
@@ -2480,72 +2624,13 @@ function filterLeaderboard(filter) {
 
 async function loadLeaderboard() {
   const list = document.getElementById('leaderboardList');
-  list.innerHTML = '<div style="text-align:center;color:#ccc">Loading...</div>';
+  list.innerHTML = '<div style="text-align:center;color:#ccc">Leaderboard feature coming soon!</div>';
   
-  try {
-    const result = await window.storage.list('player_', true);
-    
-    if (!result || !result.keys || result.keys.length === 0) {
-      list.innerHTML = '<div style="text-align:center;color:#ccc">No players yet</div>';
-      const userRankEl = document.getElementById('userRank');
-      const userScoreEl = document.getElementById('userScore');
-      if (userRankEl) userRankEl.innerText = '#1';
-      if (userScoreEl) userScoreEl.innerText = '$' + coins.toLocaleString();
-      return;
-    }
-    
-    const players = [];
-    for (const key of result.keys) {
-      try {
-        const data = await window.storage.get(key, true);
-        if (data && data.value) {
-          const player = JSON.parse(data.value);
-          players.push(player);
-        }
-      } catch (e) {
-        console.error('Error loading player:', e);
-      }
-    }
-    
-    players.sort((a, b) => b.score - a.score);
-    
-    const userIndex = players.findIndex(p => p.name === playerName);
-    const userRankEl = document.getElementById('userRank');
-    const userScoreEl = document.getElementById('userScore');
-    if (userRankEl) userRankEl.innerText = userIndex >= 0 ? '#' + (userIndex + 1) : '#999';
-    if (userScoreEl) userScoreEl.innerText = '$' + coins.toLocaleString();
-    
-    list.innerHTML = '';
-    players.slice(0, 100).forEach((player, i) => {
-      const item = document.createElement('div');
-      item.className = 'leaderboard-item' + (player.name === playerName ? ' current' : '');
-      
-      const medals = ['🥇', '🥈', '🥉'];
-      const rankDisplay = i < 3 ? medals[i] : `#${i + 1}`;
-      
-      let rankBadge = '🥉';
-      if (player.score > 5000000) rankBadge = '💎';
-      else if (player.score > 1000000) rankBadge = '🏆';
-      else if (player.score > 500000) rankBadge = '🥇';
-      else if (player.score > 100000) rankBadge = '🥈';
-      
-      item.innerHTML = `
-        <div class="leaderboard-rank">${rankDisplay}</div>
-        <div class="leaderboard-info">
-          <div class="leaderboard-name">${rankBadge} ${player.name}</div>
-          <div class="leaderboard-score">$${player.score.toLocaleString()}</div>
-        </div>
-      `;
-      
-      list.appendChild(item);
-    });
-  } catch (error) {
-    console.error('Failed to load leaderboard:', error);
-    list.innerHTML = '<div style="text-align:center;color:#ccc">Failed to load leaderboard</div>';
-  }
+  const userRankEl = document.getElementById('userRank');
+  const userScoreEl = document.getElementById('userScore');
+  if (userRankEl) userRankEl.innerText = '#1';
+  if (userScoreEl) userScoreEl.innerText = '$' + coins.toLocaleString();
 }
-
-updateLeaderboard();
 
 let minesGame = null;
 
