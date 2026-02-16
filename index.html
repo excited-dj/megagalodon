@@ -517,9 +517,32 @@ body{
   animation:legendaryPulse 2s ease-in-out infinite;
 }
 
+.case-card.nft{
+  border-image:linear-gradient(45deg,#ff00ff,#00ffff,#ffff00,#ff00ff) 1;
+  box-shadow:0 10px 40px rgba(255,0,255,0.5);
+  animation:nftPulse 2s ease-in-out infinite;
+}
+
+.case-card.nft-epic{
+  border-image:linear-gradient(45deg,#9d00ff,#00d4ff,#ff00d4,#9d00ff) 1;
+  box-shadow:0 10px 40px rgba(157,0,255,0.5);
+  animation:nftPulse 2s ease-in-out infinite;
+}
+
+.case-card.nft-mythic{
+  border-image:linear-gradient(45deg,#ff0040,#ff8800,#00ff88,#0088ff,#ff0040) 1;
+  box-shadow:0 10px 40px rgba(255,0,64,0.6);
+  animation:nftPulse 2s ease-in-out infinite;
+}
+
 @keyframes legendaryPulse{
   0%,100%{transform:scale(1);box-shadow:0 10px 40px rgba(255,107,107,0.4)}
   50%{transform:scale(1.02);box-shadow:0 12px 50px rgba(255,215,0,0.5)}
+}
+
+@keyframes nftPulse{
+  0%,100%{transform:scale(1);box-shadow:0 10px 40px rgba(255,0,255,0.5)}
+  50%{transform:scale(1.02);box-shadow:0 12px 50px rgba(0,255,255,0.6)}
 }
 
 .case-card:hover{
@@ -711,7 +734,7 @@ body{
   left:0;
   top:0;
   height:100%;
-  transition:left 3s cubic-bezier(0.25,0.1,0.25,1);
+  will-change:transform;
 }
 
 .case-reel-item{
@@ -736,546 +759,125 @@ body{
   z-index:10;
 }
 
-.mines-grid{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
-  margin:20px 0;
-  max-width:300px;
-  margin:20px auto;
-}
-
-.mine-cell{
-  aspect-ratio:1;
-  background:linear-gradient(135deg,rgba(200,200,200,0.2),rgba(255,255,255,0.2));
-  border:2px solid rgba(200,200,200,0.4);
-  border-radius:10px;
-  cursor:pointer;
-  transition:all 0.3s;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:32px;
-}
-
-.mine-cell:hover{
-  transform:scale(1.05);
-  box-shadow:0 5px 20px rgba(200,200,200,0.5);
-}
-
-.mine-cell.revealed{
-  cursor:default;
-  opacity:0.7;
-}
-
-.mine-cell.gem{
-  background:linear-gradient(135deg,rgba(200,200,200,0.4),rgba(0,200,255,0.4));
-  border-color:#ccc;
-}
-
-.mine-cell.bomb{
-  background:linear-gradient(135deg,rgba(255,255,255,0.4),rgba(255,100,0,0.4));
-  border-color:#fff;
-  animation:explode 0.5s ease-out;
-}
-
-@keyframes explode{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.3)}
-  100%{transform:scale(1)}
-}
-
-.coin-container{
-  perspective:1000px;
-  margin:30px auto;
-}
-
-.coin{
-  width:150px;
-  height:150px;
-  position:relative;
-  transform-style:preserve-3d;
-  transition:transform 2s;
-  margin:0 auto;
-}
-
-.coin-side{
-  position:absolute;
-  width:100%;
-  height:100%;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:64px;
-  backface-visibility:hidden;
-  border:4px solid;
-}
-
-.coin-heads{
-  background:linear-gradient(135deg,#ffd700,#ffed4e);
-  border-color:#fff;
-  box-shadow:0 0 40px rgba(255,255,255,0.6);
-}
-
-.coin-tails{
-  background:linear-gradient(135deg,#ccc,#00ff64);
-  border-color:#ccc;
-  transform:rotateY(180deg);
-  box-shadow:0 0 40px rgba(200,200,200,0.6);
-}
-
-.coin.flipping{
-  animation:coinFlip 2s ease-out;
-}
-
-@keyframes coinFlip{
-  0%{transform:rotateY(0deg)}
-  100%{transform:rotateY(1800deg)}
-}
-
-.choice-buttons{
-  display:flex;
-  gap:15px;
-  justify-content:center;
-  margin:20px 0;
-}
-
-.choice-btn{
-  padding:15px 30px;
-  border-radius:15px;
-  border:3px solid;
-  font-size:18px;
-  font-weight:700;
-  cursor:pointer;
-  transition:all 0.3s;
-  font-family:'Poppins',sans-serif;
-}
-
-.choice-btn.heads{
-  background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,255,255,0.2));
-  border-color:#fff;
-  color:#fff;
-}
-
-.choice-btn.tails{
-  background:linear-gradient(135deg,rgba(200,200,200,0.2),rgba(0,255,100,0.2));
-  border-color:#ccc;
-  color:#ccc;
-}
-
-.choice-btn:hover{
-  transform:scale(1.05);
-  box-shadow:0 8px 30px currentColor;
-}
-
-.choice-btn.selected{
-  background:linear-gradient(135deg,currentColor,currentColor);
-  color:#000;
-}
-
-.bet-input-group{
-  margin:20px 0;
-}
-
-.bet-input{
-  width:100%;
-  max-width:250px;
-  padding:15px;
-  background:rgba(0,0,0,0.6);
-  border:2px solid rgba(200,200,200,0.4);
-  border-radius:12px;
-  color:#fff;
-  font-size:20px;
-  font-weight:700;
-  text-align:center;
-  font-family:'Poppins',sans-serif;
-  margin:0 auto;
-  display:block;
-}
-
-.bet-input:focus{
-  outline:none;
-  border-color:#ccc;
-  box-shadow:0 0 20px rgba(200,200,200,0.5);
-}
-
-.bet-presets{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  margin-top:10px;
-  flex-wrap:wrap;
-}
-
-.bet-preset{
-  padding:8px 16px;
-  background:rgba(200,200,200,0.15);
-  border:2px solid rgba(200,200,200,0.4);
-  border-radius:10px;
-  color:#d0d0d0;
-  cursor:pointer;
-  transition:all 0.3s;
-  font-weight:700;
-}
-
-.bet-preset:hover{
-  background:rgba(200,200,200,0.2);
-  transform:scale(1.05);
-}
-
-input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  background: rgba(0,0,0,0.6);
-  border-radius: 10px;
-  height: 8px;
-  outline: none;
-  border: 2px solid rgba(200,200,200,0.3);
-}
-
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, #b8b8b8, #888);
-  cursor: pointer;
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(200,200,200,0.5);
-}
-
-input[type="range"]::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  background: linear-gradient(135deg, #b8b8b8, #888);
-  cursor: pointer;
-  border-radius: 50%;
-  border: none;
-  box-shadow: 0 0 10px rgba(200,200,200,0.5);
-}
-
-input[type="range"]::-webkit-slider-thumb:hover {
-  background: linear-gradient(135deg, #d0d0d0, #a0a0a0);
-  box-shadow: 0 0 15px rgba(200,200,200,0.8);
-}
-
-input[type="range"]::-moz-range-thumb:hover {
-  background: linear-gradient(135deg, #d0d0d0, #a0a0a0);
-  box-shadow: 0 0 15px rgba(200,200,200,0.8);
-}
-
-.task-list{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  margin-top:15px;
-}
-
-.task-item{
-  background:linear-gradient(135deg,rgba(60,40,80,0.8),rgba(40,60,80,0.8));
+.reward-item{
+  background:rgba(0,0,0,0.4);
   border:2px solid rgba(200,200,200,0.3);
-  border-radius:15px;
-  padding:18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  transition:all 0.3s;
+  border-radius:12px;
+  padding:12px;
+  margin:8px 0;
+  text-align:left;
 }
 
-.task-item:hover{
+.reward-item.rare{border-color:#ffd700;background:rgba(255,215,0,0.1)}
+.reward-item.epic{border-color:#ff00ff;background:rgba(255,0,255,0.1)}
+.reward-item.legendary{border-color:#ff6b6b;background:rgba(255,107,107,0.1)}
+.reward-item.common{border-color:rgba(200,200,200,0.3);background:rgba(200,200,200,0.05)}
+
+.payment-option-btn{
+  background:linear-gradient(135deg,rgba(100,100,100,0.6),rgba(60,60,60,0.6));
+  border:2px solid rgba(200,200,200,0.4);
+  color:#e0e0e0;
+  padding:15px 20px;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all 0.3s;
+  margin:8px 0;
+  width:100%;
+}
+
+.payment-option-btn:hover{
+  background:linear-gradient(135deg,rgba(140,140,140,0.7),rgba(100,100,100,0.7));
   border-color:rgba(200,200,200,0.6);
-  box-shadow:0 8px 30px rgba(200,200,200,0.3);
+  transform:translateY(-2px);
+  box-shadow:0 5px 20px rgba(200,200,200,0.4);
 }
 
-.task-info{
-  flex:1;
-}
+.mines-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:20px 0;max-width:300px;margin:20px auto}
+.mine-cell{aspect-ratio:1;background:linear-gradient(135deg,rgba(200,200,200,0.2),rgba(255,255,255,0.2));border:2px solid rgba(200,200,200,0.4);border-radius:10px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;font-size:32px}
+.mine-cell:hover{transform:scale(1.05);box-shadow:0 5px 20px rgba(200,200,200,0.5)}
+.mine-cell.revealed{cursor:default;opacity:0.7}
+.mine-cell.gem{background:linear-gradient(135deg,rgba(200,200,200,0.4),rgba(0,200,255,0.4));border-color:#ccc}
+.mine-cell.bomb{background:linear-gradient(135deg,rgba(255,255,255,0.4),rgba(255,100,0,0.4));border-color:#fff;animation:explode 0.5s ease-out}
+@keyframes explode{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
 
-.task-title{
-  font-size:16px;
-  font-weight:700;
-  color:#e0e0e0;
-  margin-bottom:5px;
-}
+.coin-container{perspective:1000px;margin:30px auto}
+.coin{width:150px;height:150px;position:relative;transform-style:preserve-3d;transition:transform 2s;margin:0 auto}
+.coin-side{position:absolute;width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:64px;backface-visibility:hidden;border:4px solid}
+.coin-heads{background:linear-gradient(135deg,#ffd700,#ffed4e);border-color:#fff;box-shadow:0 0 40px rgba(255,255,255,0.6)}
+.coin-tails{background:linear-gradient(135deg,#ccc,#00ff64);border-color:#ccc;transform:rotateY(180deg);box-shadow:0 0 40px rgba(200,200,200,0.6)}
+.coin.flipping{animation:coinFlip 2s ease-out}
+@keyframes coinFlip{0%{transform:rotateY(0deg)}100%{transform:rotateY(1800deg)}}
 
-.task-reward{
-  font-size:14px;
-  color:#fff;
-}
+.choice-buttons{display:flex;gap:15px;justify-content:center;margin:20px 0}
+.choice-btn{padding:15px 30px;border-radius:15px;border:3px solid;font-size:18px;font-weight:700;cursor:pointer;transition:all 0.3s;font-family:'Poppins',sans-serif}
+.choice-btn.heads{background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(255,255,255,0.2));border-color:#fff;color:#fff}
+.choice-btn.tails{background:linear-gradient(135deg,rgba(200,200,200,0.2),rgba(0,255,100,0.2));border-color:#ccc;color:#ccc}
+.choice-btn:hover{transform:scale(1.05);box-shadow:0 8px 30px currentColor}
+.choice-btn.selected{background:linear-gradient(135deg,currentColor,currentColor);color:#000}
 
-.task-btn{
-  padding:10px 20px;
-  background:linear-gradient(135deg,#b8b8b8,#888);
-  border:none;
-  border-radius:10px;
-  color:#fff;
-  font-weight:700;
-  cursor:pointer;
-  transition:all 0.3s;
-}
+.bet-input-group{margin:20px 0}
+.bet-input{width:100%;max-width:250px;padding:15px;background:rgba(0,0,0,0.6);border:2px solid rgba(200,200,200,0.4);border-radius:12px;color:#fff;font-size:20px;font-weight:700;text-align:center;font-family:'Poppins',sans-serif;margin:0 auto;display:block}
+.bet-input:focus{outline:none;border-color:#ccc;box-shadow:0 0 20px rgba(200,200,200,0.5)}
+.bet-presets{display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.bet-preset{padding:8px 16px;background:rgba(200,200,200,0.15);border:2px solid rgba(200,200,200,0.4);border-radius:10px;color:#d0d0d0;cursor:pointer;transition:all 0.3s;font-weight:700}
+.bet-preset:hover{background:rgba(200,200,200,0.2);transform:scale(1.05)}
 
-.task-btn:hover{
-  transform:scale(1.05);
-  box-shadow:0 5px 20px rgba(180,180,180,0.4);
-}
+input[type="range"]{-webkit-appearance:none;appearance:none;background:rgba(0,0,0,0.6);border-radius:10px;height:8px;outline:none;border:2px solid rgba(200,200,200,0.3)}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;background:linear-gradient(135deg,#b8b8b8,#888);cursor:pointer;border-radius:50%;box-shadow:0 0 10px rgba(200,200,200,0.5)}
+input[type="range"]::-moz-range-thumb{width:20px;height:20px;background:linear-gradient(135deg,#b8b8b8,#888);cursor:pointer;border-radius:50%;border:none;box-shadow:0 0 10px rgba(200,200,200,0.5)}
 
-.task-btn.completed{
-  background:#333;
-  color:#666;
-  cursor:default;
-}
+.task-list{display:flex;flex-direction:column;gap:12px;margin-top:15px}
+.task-item{background:linear-gradient(135deg,rgba(60,40,80,0.8),rgba(40,60,80,0.8));border:2px solid rgba(200,200,200,0.3);border-radius:15px;padding:18px;display:flex;justify-content:space-between;align-items:center;transition:all 0.3s}
+.task-item:hover{border-color:rgba(200,200,200,0.6);box-shadow:0 8px 30px rgba(200,200,200,0.3)}
+.task-info{flex:1}
+.task-title{font-size:16px;font-weight:700;color:#e0e0e0;margin-bottom:5px}
+.task-reward{font-size:14px;color:#fff}
+.task-btn{padding:10px 20px;background:linear-gradient(135deg,#b8b8b8,#888);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;transition:all 0.3s}
+.task-btn:hover{transform:scale(1.05);box-shadow:0 5px 20px rgba(180,180,180,0.4)}
+.task-btn.completed{background:#333;color:#666;cursor:default}
 
-.leaderboard-list{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  margin-top:15px;
-}
+.leaderboard-list{display:flex;flex-direction:column;gap:10px;margin-top:15px}
+.leaderboard-item{background:rgba(30,30,40,0.8);border:2px solid rgba(200,200,200,0.2);border-radius:12px;padding:15px;display:flex;align-items:center;gap:15px}
+.leaderboard-rank{font-size:24px;font-weight:700;color:#fff;min-width:40px;font-family:'Poppins',sans-serif}
+.leaderboard-info{flex:1}
+.leaderboard-name{font-size:16px;font-weight:700;color:#fff}
+.leaderboard-score{font-size:14px;color:#ccc}
+.leaderboard-item.current{border-color:#e0e0e0;background:rgba(224,224,224,0.1);box-shadow:0 5px 20px rgba(224,224,224,0.3)}
 
-.leaderboard-item{
-  background:rgba(30,30,40,0.8);
-  border:2px solid rgba(200,200,200,0.2);
-  border-radius:12px;
-  padding:15px;
-  display:flex;
-  align-items:center;
-  gap:15px;
-}
+.filter-btn{background:rgba(200,200,200,0.15);border:2px solid rgba(200,200,200,0.4);color:#d0d0d0;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer;transition:all 0.3s;flex-shrink:0}
+.filter-btn.active{background:linear-gradient(135deg,rgba(255,255,255,0.3),rgba(220,220,220,0.3));border-color:#e0e0e0;color:#fff;box-shadow:0 5px 20px rgba(224,224,224,0.5)}
+.filter-btn:active{transform:scale(0.95)}
 
-.leaderboard-rank{
-  font-size:24px;
-  font-weight:700;
-  color:#fff;
-  min-width:40px;
-  font-family:'Poppins',sans-serif;
-}
+.deposit-options{display:flex;flex-direction:column;gap:12px;margin-top:20px}
+.deposit-option{background:rgba(30,30,40,0.8);border:2px solid rgba(200,200,200,0.3);border-radius:15px;padding:20px}
+.deposit-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.deposit-currency{font-size:18px;font-weight:700;color:#e0e0e0}
+.deposit-address{background:rgba(0,0,0,0.6);border:2px solid rgba(200,200,200,0.3);border-radius:10px;padding:10px;margin-top:10px;font-size:12px;color:#ccc;word-break:break-all;font-family:monospace}
+.copy-btn{background:linear-gradient(135deg,#b8b8b8,#888);border:none;padding:8px 16px;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;margin-top:8px;font-size:12px}
 
-.leaderboard-info{
-  flex:1;
-}
+.shop-grid{display:grid;grid-template-columns:1fr;gap:15px;margin-top:20px}
+.shop-item{background:linear-gradient(135deg,rgba(60,40,80,0.8),rgba(40,60,80,0.8));border:2px solid rgba(200,200,200,0.3);border-radius:15px;padding:20px;display:flex;justify-content:space-between;align-items:center}
+.shop-info{flex:1}
+.shop-title{font-size:18px;font-weight:700;color:#e0e0e0;margin-bottom:5px}
+.shop-description{font-size:14px;color:#ccc;margin-bottom:8px}
+.shop-price{font-size:16px;color:#4ade80;font-weight:700}
+.shop-btn{padding:12px 24px;background:linear-gradient(135deg,#b8b8b8,#888);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;transition:all 0.3s}
+.shop-btn:hover{transform:scale(1.05);box-shadow:0 5px 20px rgba(180,180,180,0.4)}
+.shop-btn.owned{background:#4ade80;cursor:default}
+.shop-btn.equipped{background:#333;color:#4ade80;cursor:default}
 
-.leaderboard-name{
-  font-size:16px;
-  font-weight:700;
-  color:#fff;
-}
-
-.leaderboard-score{
-  font-size:14px;
-  color:#ccc;
-}
-
-.leaderboard-item.current{
-  border-color:#e0e0e0;
-  background:rgba(224,224,224,0.1);
-  box-shadow:0 5px 20px rgba(224,224,224,0.3);
-}
-
-.filter-btn{
-  background:rgba(200,200,200,0.15);
-  border:2px solid rgba(200,200,200,0.4);
-  color:#d0d0d0;
-  padding:10px 16px;
-  border-radius:12px;
-  font-size:13px;
-  font-weight:700;
-  white-space:nowrap;
-  cursor:pointer;
-  transition:all 0.3s;
-  flex-shrink:0;
-}
-
-.filter-btn.active{
-  background:linear-gradient(135deg,rgba(255,255,255,0.3),rgba(220,220,220,0.3));
-  border-color:#e0e0e0;
-  color:#fff;
-  box-shadow:0 5px 20px rgba(224,224,224,0.5);
-}
-
-.filter-btn:active{
-  transform:scale(0.95);
-}
-
-.deposit-options{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  margin-top:20px;
-}
-
-.deposit-option{
-  background:rgba(30,30,40,0.8);
-  border:2px solid rgba(200,200,200,0.3);
-  border-radius:15px;
-  padding:20px;
-}
-
-.deposit-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:12px;
-}
-
-.deposit-currency{
-  font-size:18px;
-  font-weight:700;
-  color:#e0e0e0;
-}
-
-.deposit-address{
-  background:rgba(0,0,0,0.6);
-  border:2px solid rgba(200,200,200,0.3);
-  border-radius:10px;
-  padding:10px;
-  margin-top:10px;
-  font-size:12px;
-  color:#ccc;
-  word-break:break-all;
-  font-family:monospace;
-}
-
-.copy-btn{
-  background:linear-gradient(135deg,#b8b8b8,#888);
-  border:none;
-  padding:8px 16px;
-  border-radius:8px;
-  color:#fff;
-  font-weight:700;
-  cursor:pointer;
-  margin-top:8px;
-  font-size:12px;
-}
-
-.shop-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:15px;
-  margin-top:20px;
-}
-
-.shop-item{
-  background:linear-gradient(135deg,rgba(60,40,80,0.8),rgba(40,60,80,0.8));
-  border:2px solid rgba(200,200,200,0.3);
-  border-radius:15px;
-  padding:20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.shop-info{
-  flex:1;
-}
-
-.shop-title{
-  font-size:18px;
-  font-weight:700;
-  color:#e0e0e0;
-  margin-bottom:5px;
-}
-
-.shop-description{
-  font-size:14px;
-  color:#ccc;
-  margin-bottom:8px;
-}
-
-.shop-price{
-  font-size:16px;
-  color:#4ade80;
-  font-weight:700;
-}
-
-.shop-btn{
-  padding:12px 24px;
-  background:linear-gradient(135deg,#b8b8b8,#888);
-  border:none;
-  border-radius:10px;
-  color:#fff;
-  font-weight:700;
-  cursor:pointer;
-  transition:all 0.3s;
-}
-
-.shop-btn:hover{
-  transform:scale(1.05);
-  box-shadow:0 5px 20px rgba(180,180,180,0.4);
-}
-
-.shop-btn.owned{
-  background:#4ade80;
-  cursor:default;
-}
-
-.shop-btn.equipped{
-  background:#333;
-  color:#4ade80;
-  cursor:default;
-}
-
-.welcome-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.98);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:10000;
-  backdrop-filter:blur(10px);
-}
-
-.welcome-content{
-  max-width:400px;
-  padding:40px;
-  text-align:center;
-  animation:fadeIn 1s ease-out;
-}
-
-.welcome-logo{
-  font-size:64px;
-  font-weight:900;
-  background:linear-gradient(135deg,#fff 0%,#e0e0e0 50%,#fff 100%);
-  background-size:200%;
-  -webkit-background-clip:text;
-  background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation:logoGlow 3s ease infinite;
-  letter-spacing:8px;
-  margin-bottom:30px;
-}
-
-.welcome-text{
-  font-size:18px;
-  color:#e0e0e0;
-  line-height:1.6;
-  margin-bottom:30px;
-}
-
-.welcome-btn{
-  background:linear-gradient(135deg,#b8b8b8,#888);
-  color:#fff;
-  border:none;
-  padding:16px 40px;
-  border-radius:20px;
-  font-size:18px;
-  font-weight:bold;
-  cursor:pointer;
-  box-shadow:0 10px 30px rgba(180,180,180,0.5);
-  transition:all 0.3s;
-  font-family:'Poppins',sans-serif;
-}
-
-.welcome-btn:hover{
-  transform:translateY(-3px);
-  box-shadow:0 15px 40px rgba(180,180,180,0.6);
-}
+.welcome-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.98);display:flex;justify-content:center;align-items:center;z-index:10000;backdrop-filter:blur(10px)}
+.welcome-content{max-width:400px;padding:40px;text-align:center;animation:fadeIn 1s ease-out}
+.welcome-logo{font-size:64px;font-weight:900;background:linear-gradient(135deg,#fff 0%,#e0e0e0 50%,#fff 100%);background-size:200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:logoGlow 3s ease infinite;letter-spacing:8px;margin-bottom:30px}
+.welcome-text{font-size:18px;color:#e0e0e0;line-height:1.6;margin-bottom:30px}
+.welcome-btn{background:linear-gradient(135deg,#b8b8b8,#888);color:#fff;border:none;padding:16px 40px;border-radius:20px;font-size:18px;font-weight:bold;cursor:pointer;box-shadow:0 10px 30px rgba(180,180,180,0.5);transition:all 0.3s;font-family:'Poppins',sans-serif}
+.welcome-btn:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(180,180,180,0.6)}
 </style>
 </head>
 <body>
 
-<!-- Welcome Screen -->
 <div class="welcome-overlay" id="welcomeScreen">
   <div class="welcome-content">
     <div class="welcome-logo">BERON</div>
@@ -1299,7 +901,6 @@ input[type="range"]::-moz-range-thumb:hover {
   <div class="logo">BERON</div>
 </div>
 
-<!-- MAIN TAB -->
 <div class="tab-content active" id="mainTab">
   <div class="stats-box">
     <div class="coins" id="coins">$0</div>
@@ -1366,7 +967,6 @@ input[type="range"]::-moz-range-thumb:hover {
   </div>
 </div>
 
-<!-- CASES TAB -->
 <div class="tab-content" id="casesTab">
   <div class="section-title" style="margin-top:20px">🎰 CASES</div>
   <div class="cases-grid">
@@ -1379,98 +979,149 @@ input[type="range"]::-moz-range-thumb:hover {
       </div>
     </div>
     
-    <div class="case-card starter" onclick="showCaseOptions('starter')">
+    <div class="case-card starter" onclick="showCasePreview('starter')">
       <div class="case-card-content">
         <div class="case-icon">📦</div>
         <div class="case-name">Starter Case</div>
         <div class="case-price-options">
-          <div class="price-option">💰 $500</div>
-          <div class="price-option">⭐ 50</div>
+          <div class="price-option">💰 $50</div>
+          <div class="price-option">⭐ 5</div>
         </div>
-        <div class="case-rewards">Win: $200 - $2,000</div>
+        <div class="case-rewards">Win: $20 - $200</div>
       </div>
     </div>
     
-    <div class="case-card bronze" onclick="showCaseOptions('bronze')">
+    <div class="case-card bronze" onclick="showCasePreview('bronze')">
       <div class="case-card-content">
         <div class="case-icon">🥉</div>
         <div class="case-name">Bronze Case</div>
         <div class="case-price-options">
-          <div class="price-option">💰 $2,000</div>
-          <div class="price-option">⭐ 200</div>
+          <div class="price-option">💰 $200</div>
+          <div class="price-option">⭐ 20</div>
         </div>
-        <div class="case-rewards">Win: $1,000 - $8,000</div>
+        <div class="case-rewards">Win: $100 - $800</div>
       </div>
     </div>
     
-    <div class="case-card silver" onclick="showCaseOptions('silver')">
+    <div class="case-card silver" onclick="showCasePreview('silver')">
       <div class="case-card-content">
         <div class="case-icon">🥈</div>
         <div class="case-name">Silver Case</div>
         <div class="case-price-options">
-          <div class="price-option">💰 $10,000</div>
-          <div class="price-option">⭐ 1,000</div>
-          <div class="price-option">🔥 100</div>
+          <div class="price-option">💰 $1,000</div>
+          <div class="price-option">⭐ 100</div>
+          <div class="price-option">🔥 10</div>
         </div>
-        <div class="case-rewards">Win: $5,000 - $30,000</div>
+        <div class="case-rewards">Win: $500 - $3,000</div>
       </div>
     </div>
     
-    <div class="case-card gold" onclick="showCaseOptions('gold')">
+    <div class="case-card gold" onclick="showCasePreview('gold')">
       <div class="case-card-content">
         <div class="case-icon">🥇</div>
         <div class="case-name">Gold Case</div>
+        <div class="case-price-options">
+          <div class="price-option">💰 $5,000</div>
+          <div class="price-option">⭐ 500</div>
+          <div class="price-option">🔥 50</div>
+        </div>
+        <div class="case-rewards">Win: $2,500 - $15,000</div>
+      </div>
+    </div>
+
+    <div class="case-card platinum" onclick="showCasePreview('platinum')">
+      <div class="case-card-content">
+        <div class="case-icon">💿</div>
+        <div class="case-name">Platinum Case</div>
+        <div class="case-price-options">
+          <div class="price-option">💰 $20,000</div>
+          <div class="price-option">⭐ 2,000</div>
+          <div class="price-option">🔥 200</div>
+        </div>
+        <div class="case-rewards">Win: $10K - $50K</div>
+      </div>
+    </div>
+
+    <div class="case-card diamond" onclick="showCasePreview('diamond')">
+      <div class="case-card-content">
+        <div class="case-icon">💎</div>
+        <div class="case-name">Diamond Case</div>
+        <div class="case-price-options">
+          <div class="price-option">💰 $100,000</div>
+          <div class="price-option">⭐ 10,000</div>
+          <div class="price-option">🔥 1,000</div>
+        </div>
+        <div class="case-rewards">Win: $50K - $200K</div>
+      </div>
+    </div>
+
+    <div class="case-card legendary" onclick="showCasePreview('legendary')">
+      <div class="case-card-content">
+        <div class="case-icon">🌟</div>
+        <div class="case-name">Legendary Case</div>
+        <div class="case-price-options">
+          <div class="price-option">💰 $500,000</div>
+          <div class="price-option">⭐ 50,000</div>
+          <div class="price-option">🔥 5,000</div>
+        </div>
+        <div class="case-rewards">Win: $250K - $1M</div>
+      </div>
+    </div>
+
+    <div class="case-card nft" onclick="showCasePreview('nft')">
+      <div class="case-card-content">
+        <div class="case-icon">🖼️</div>
+        <div class="case-name">NFT Starter</div>
         <div class="case-price-options">
           <div class="price-option">💰 $50,000</div>
           <div class="price-option">⭐ 5,000</div>
           <div class="price-option">🔥 500</div>
         </div>
-        <div class="case-rewards">Win: $25,000 - $150,000</div>
+        <div class="case-rewards">NFTs + $25K - $250K</div>
       </div>
     </div>
 
-    <div class="case-card platinum" onclick="showCaseOptions('platinum')">
+    <div class="case-card nft" onclick="showCasePreview('nft_pro')">
       <div class="case-card-content">
-        <div class="case-icon">💿</div>
-        <div class="case-name">Platinum Case</div>
+        <div class="case-icon">🎨</div>
+        <div class="case-name">NFT Pro</div>
         <div class="case-price-options">
-          <div class="price-option">💰 $200,000</div>
-          <div class="price-option">⭐ 20,000</div>
-          <div class="price-option">🔥 2,000</div>
+          <div class="price-option">💰 $250,000</div>
+          <div class="price-option">⭐ 25,000</div>
+          <div class="price-option">🔥 2,500</div>
         </div>
-        <div class="case-rewards">Win: $100,000 - $500,000</div>
+        <div class="case-rewards">NFTs + $100K - $1M</div>
       </div>
     </div>
 
-    <div class="case-card diamond" onclick="showCaseOptions('diamond')">
+    <div class="case-card nft-epic" onclick="showCasePreview('nft_epic')">
       <div class="case-card-content">
-        <div class="case-icon">💎</div>
-        <div class="case-name">Diamond Case</div>
+        <div class="case-icon">🎭</div>
+        <div class="case-name">NFT Epic</div>
         <div class="case-price-options">
           <div class="price-option">💰 $1,000,000</div>
           <div class="price-option">⭐ 100,000</div>
           <div class="price-option">🔥 10,000</div>
         </div>
-        <div class="case-rewards">Win: $500,000 - $2,000,000</div>
+        <div class="case-rewards">NFTs + $500K - $5M</div>
       </div>
     </div>
 
-    <div class="case-card legendary" onclick="showCaseOptions('legendary')">
+    <div class="case-card nft-mythic" onclick="showCasePreview('nft_mythic')">
       <div class="case-card-content">
-        <div class="case-icon">🌟</div>
-        <div class="case-name">Legendary Case</div>
+        <div class="case-icon">👑</div>
+        <div class="case-name">NFT Mythic</div>
         <div class="case-price-options">
-          <div class="price-option">💰 $5,000,000</div>
-          <div class="price-option">⭐ 500,000</div>
-          <div class="price-option">🔥 50,000</div>
+          <div class="price-option">💰 $10,000,000</div>
+          <div class="price-option">⭐ 1,000,000</div>
+          <div class="price-option">🔥 100,000</div>
         </div>
-        <div class="case-rewards">Win: $2,500,000 - $10,000,000</div>
+        <div class="case-rewards">NFTs + $5M - $50M</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- TASKS TAB -->
 <div class="tab-content" id="tasksTab">
   <div class="section-title" style="margin-top:20px">📋 TASKS</div>
   
@@ -1493,7 +1144,6 @@ input[type="range"]::-moz-range-thumb:hover {
   <div class="task-list" id="specialTaskList"></div>
 </div>
 
-<!-- SHOP TAB -->
 <div class="tab-content" id="shopTab">
   <div class="section-title" style="margin-top:20px">🏪 SHOP</div>
   
@@ -1504,7 +1154,6 @@ input[type="range"]::-moz-range-thumb:hover {
   <div class="shop-grid" id="upgradeShop"></div>
 </div>
 
-<!-- LEADERBOARD TAB -->
 <div class="tab-content" id="leaderboardTab">
   <div class="section-title" style="margin-top:20px">🏆 LEADERBOARD</div>
   
@@ -1523,7 +1172,6 @@ input[type="range"]::-moz-range-thumb:hover {
   <div class="leaderboard-list" id="leaderboardList"></div>
 </div>
 
-<!-- PVP TAB -->
 <div class="tab-content" id="pvpTab">
   <div class="section-title" style="margin-top:20px">⚔️ PVP ARENA</div>
   <div style="text-align:center;padding:40px 20px">
@@ -1546,24 +1194,36 @@ input[type="range"]::-moz-range-thumb:hover {
 </div>
 </div>
 
-<!-- Popups -->
-<div class="popup" id="caseSelectionPopup">
+<div class="popup" id="casePreviewPopup">
   <div class="popup-content">
-    <div class="popup-title" id="caseSelectionTitle">Select Payment</div>
-    <div style="display:flex;flex-direction:column;gap:15px;margin:20px 0" id="casePaymentOptions"></div>
-    <button class="popup-btn" onclick="closeCaseSelection()">Cancel</button>
+    <div class="popup-title" id="previewTitle">📦 Case Preview</div>
+    <div style="margin:15px 0;font-size:16px;color:#ccc">What can drop:</div>
+    <div id="rewardsList" style="max-height:300px;overflow-y:auto;margin:15px 0"></div>
+    <button class="popup-btn" onclick="showPaymentOptions()" style="background:linear-gradient(135deg,#4ade80,#22c55e)">🛒 Buy Case</button>
+    <button class="popup-btn" onclick="closeCasePreview()">Cancel</button>
   </div>
 </div>
 
-<div class="popup" id="casePopup">
+<div class="popup" id="paymentPopup">
   <div class="popup-content">
-    <div class="popup-title" id="caseTitle">🎰 Opening Case</div>
+    <div class="popup-title">💳 Select Currency</div>
+    <div id="paymentOptions"></div>
+    <button class="popup-btn" onclick="closePaymentPopup()">Cancel</button>
+  </div>
+</div>
+
+<div class="popup" id="caseOpeningPopup">
+  <div class="popup-content">
+    <div class="popup-title" id="openingTitle">🎰 Opening case...</div>
     <div class="case-reel">
       <div class="case-reel-items" id="caseReelItems"></div>
       <div class="case-reel-pointer"></div>
     </div>
-    <div class="popup-reward" id="caseReward" style="display:none">0</div>
-    <button class="popup-btn" id="caseClaimBtn" onclick="closeCase()" style="display:none">Claim!</button>
+    <div id="winResult" style="display:none;margin-top:20px">
+      <div style="font-size:24px;color:#4ade80;font-weight:bold;margin-bottom:10px">🎉 You won!</div>
+      <div class="popup-reward" id="winAmount">$0</div>
+    </div>
+    <button class="popup-btn" id="claimWinBtn" onclick="claimWin()" style="display:none;background:linear-gradient(135deg,#4ade80,#22c55e)">✅ Claim</button>
   </div>
 </div>
 
@@ -1580,25 +1240,9 @@ input[type="range"]::-moz-range-thumb:hover {
 <div class="popup" id="depositPopup">
   <div class="popup-content">
     <div class="popup-title">💰 Deposit</div>
-    <div style="font-size:14px;color:#ccc;margin-bottom:15px">Send crypto to the addresses below</div>
-    <div class="deposit-options">
-      <div class="deposit-option">
-        <div class="deposit-header">
-          <div class="deposit-currency">⭐ BER Stars (TON)</div>
-        </div>
-        <div class="deposit-address" id="tonAddress">UQBeron_Stars_TON_Wallet_Address_Here</div>
-        <button class="copy-btn" onclick="copyAddress('ton')">📋 Copy Address</button>
-      </div>
-      <div class="deposit-option">
-        <div class="deposit-header">
-          <div class="deposit-currency">🔥 BER Tons (TON)</div>
-        </div>
-        <div class="deposit-address" id="tonsAddress">UQBeron_Tons_TON_Wallet_Address_Here</div>
-        <button class="copy-btn" onclick="copyAddress('tons')">📋 Copy Address</button>
-      </div>
-    </div>
-    <div style="font-size:12px;color:#999;margin-top:15px;text-align:center">Deposits are credited automatically after confirmation</div>
-    <button class="popup-btn" onclick="closeDeposit()" style="margin-top:20px">Close</button>
+    <div style="font-size:56px;margin:30px 0;color:#fff;font-weight:bold;font-family:'Poppins',sans-serif;text-shadow:0 0 40px rgba(255,255,255,1)">SOON!</div>
+    <div style="font-size:18px;color:#ccc;margin-bottom:20px">Feature coming soon...</div>
+    <button class="popup-btn" onclick="closeDeposit()">OK</button>
   </div>
 </div>
 
@@ -1731,7 +1375,6 @@ input[type="range"]::-moz-range-thumb:hover {
 <script>
 document.addEventListener('contextmenu', e => e.preventDefault());
 
-// Game state
 let coins = parseInt(localStorage.getItem('coins')) || 0;
 let tokens = parseInt(localStorage.getItem('tokens')) || 0;
 let stars = parseInt(localStorage.getItem('stars')) || 0;
@@ -1750,7 +1393,188 @@ let ownedSkins = JSON.parse(localStorage.getItem('ownedSkins')) || ['default'];
 let playerName = localStorage.getItem('playerName') || 'Player' + Math.floor(Math.random() * 10000);
 let hasSeenWelcome = localStorage.getItem('hasSeenWelcome') === 'true';
 
-// Skin definitions
+let currentCaseType = '';
+let currentWinAmount = 0;
+
+// CASE CONFIGS (10x cheaper + more NFT cases)
+const caseConfigs = {
+  starter: {
+    name: '📦 Starter Case',
+    payments: [
+      {type: 'coins', amount: 50, label: '💰 $50'},
+      {type: 'stars', amount: 5, label: '⭐ 5 Stars'}
+    ],
+    rewards: [
+      {amount: 200, chance: 5, rarity: 'legendary'},
+      {amount: 150, chance: 10, rarity: 'epic'},
+      {amount: 100, chance: 30, rarity: 'rare'},
+      {amount: 50, chance: 30, rarity: 'common'},
+      {amount: 20, chance: 25, rarity: 'common'}
+    ]
+  },
+  bronze: {
+    name: '🥉 Bronze Case',
+    payments: [
+      {type: 'coins', amount: 200, label: '💰 $200'},
+      {type: 'stars', amount: 20, label: '⭐ 20 Stars'}
+    ],
+    rewards: [
+      {amount: 800, chance: 5, rarity: 'legendary'},
+      {amount: 600, chance: 15, rarity: 'epic'},
+      {amount: 500, chance: 30, rarity: 'rare'},
+      {amount: 400, chance: 30, rarity: 'common'},
+      {amount: 200, chance: 20, rarity: 'common'}
+    ]
+  },
+  silver: {
+    name: '🥈 Silver Case',
+    payments: [
+      {type: 'coins', amount: 1000, label: '💰 $1,000'},
+      {type: 'stars', amount: 100, label: '⭐ 100 Stars'},
+      {type: 'bertons', amount: 10, label: '🔥 10 Tons'}
+    ],
+    rewards: [
+      {amount: 3000, chance: 5, rarity: 'legendary'},
+      {amount: 2500, chance: 15, rarity: 'epic'},
+      {amount: 2000, chance: 30, rarity: 'rare'},
+      {amount: 1500, chance: 30, rarity: 'common'},
+      {amount: 1000, chance: 20, rarity: 'common'}
+    ]
+  },
+  gold: {
+    name: '🥇 Gold Case',
+    payments: [
+      {type: 'coins', amount: 5000, label: '💰 $5,000'},
+      {type: 'stars', amount: 500, label: '⭐ 500 Stars'},
+      {type: 'bertons', amount: 50, label: '🔥 50 Tons'}
+    ],
+    rewards: [
+      {amount: 15000, chance: 5, rarity: 'legendary'},
+      {amount: 12500, chance: 10, rarity: 'epic'},
+      {amount: 10000, chance: 15, rarity: 'rare'},
+      {amount: 8000, chance: 20, rarity: 'rare'},
+      {amount: 7000, chance: 20, rarity: 'common'},
+      {amount: 6000, chance: 15, rarity: 'common'},
+      {amount: 5000, chance: 10, rarity: 'common'},
+      {amount: 2500, chance: 5, rarity: 'common'}
+    ]
+  },
+  platinum: {
+    name: '💿 Platinum Case',
+    payments: [
+      {type: 'coins', amount: 20000, label: '💰 $20,000'},
+      {type: 'stars', amount: 2000, label: '⭐ 2,000 Stars'},
+      {type: 'bertons', amount: 200, label: '🔥 200 Tons'}
+    ],
+    rewards: [
+      {amount: 50000, chance: 5, rarity: 'legendary'},
+      {amount: 40000, chance: 10, rarity: 'epic'},
+      {amount: 35000, chance: 15, rarity: 'rare'},
+      {amount: 30000, chance: 20, rarity: 'rare'},
+      {amount: 25000, chance: 20, rarity: 'common'},
+      {amount: 20000, chance: 15, rarity: 'common'},
+      {amount: 15000, chance: 10, rarity: 'common'},
+      {amount: 10000, chance: 5, rarity: 'common'}
+    ]
+  },
+  diamond: {
+    name: '💎 Diamond Case',
+    payments: [
+      {type: 'coins', amount: 100000, label: '💰 $100,000'},
+      {type: 'stars', amount: 10000, label: '⭐ 10,000 Stars'},
+      {type: 'bertons', amount: 1000, label: '🔥 1,000 Tons'}
+    ],
+    rewards: [
+      {amount: 200000, chance: 5, rarity: 'legendary'},
+      {amount: 175000, chance: 10, rarity: 'epic'},
+      {amount: 150000, chance: 15, rarity: 'rare'},
+      {amount: 125000, chance: 20, rarity: 'rare'},
+      {amount: 100000, chance: 20, rarity: 'common'},
+      {amount: 80000, chance: 15, rarity: 'common'},
+      {amount: 60000, chance: 10, rarity: 'common'},
+      {amount: 50000, chance: 5, rarity: 'common'}
+    ]
+  },
+  legendary: {
+    name: '🌟 Legendary Case',
+    payments: [
+      {type: 'coins', amount: 500000, label: '💰 $500,000'},
+      {type: 'stars', amount: 50000, label: '⭐ 50,000 Stars'},
+      {type: 'bertons', amount: 5000, label: '🔥 5,000 Tons'}
+    ],
+    rewards: [
+      {amount: 1000000, chance: 5, rarity: 'legendary'},
+      {amount: 800000, chance: 10, rarity: 'epic'},
+      {amount: 700000, chance: 15, rarity: 'rare'},
+      {amount: 600000, chance: 20, rarity: 'rare'},
+      {amount: 500000, chance: 20, rarity: 'common'},
+      {amount: 400000, chance: 15, rarity: 'common'},
+      {amount: 350000, chance: 10, rarity: 'common'},
+      {amount: 250000, chance: 5, rarity: 'common'}
+    ]
+  },
+  nft: {
+    name: '🖼️ NFT Starter',
+    payments: [
+      {type: 'coins', amount: 50000, label: '💰 $50,000'},
+      {type: 'stars', amount: 5000, label: '⭐ 5,000 Stars'},
+      {type: 'bertons', amount: 500, label: '🔥 500 Tons'}
+    ],
+    rewards: [
+      {amount: 250000, chance: 2, rarity: 'legendary', name: 'Legendary NFT + $250K'},
+      {amount: 150000, chance: 5, rarity: 'legendary', name: 'Epic NFT + $150K'},
+      {amount: 100000, chance: 8, rarity: 'epic', name: 'Rare NFT + $100K'},
+      {amount: 50000, chance: 35, rarity: 'rare', name: 'Common NFT + $50K'},
+      {amount: 25000, chance: 50, rarity: 'common', name: 'Mini NFT + $25K'}
+    ]
+  },
+  nft_pro: {
+    name: '🎨 NFT Pro',
+    payments: [
+      {type: 'coins', amount: 250000, label: '💰 $250,000'},
+      {type: 'stars', amount: 25000, label: '⭐ 25,000 Stars'},
+      {type: 'bertons', amount: 2500, label: '🔥 2,500 Tons'}
+    ],
+    rewards: [
+      {amount: 1000000, chance: 2, rarity: 'legendary', name: 'Diamond NFT + $1M'},
+      {amount: 750000, chance: 5, rarity: 'legendary', name: 'Platinum NFT + $750K'},
+      {amount: 500000, chance: 8, rarity: 'epic', name: 'Gold NFT + $500K'},
+      {amount: 300000, chance: 35, rarity: 'rare', name: 'Silver NFT + $300K'},
+      {amount: 100000, chance: 50, rarity: 'common', name: 'Bronze NFT + $100K'}
+    ]
+  },
+  nft_epic: {
+    name: '🎭 NFT Epic',
+    payments: [
+      {type: 'coins', amount: 1000000, label: '💰 $1,000,000'},
+      {type: 'stars', amount: 100000, label: '⭐ 100,000 Stars'},
+      {type: 'bertons', amount: 10000, label: '🔥 10,000 Tons'}
+    ],
+    rewards: [
+      {amount: 5000000, chance: 2, rarity: 'legendary', name: 'Cosmic NFT + $5M'},
+      {amount: 3000000, chance: 5, rarity: 'legendary', name: 'Astral NFT + $3M'},
+      {amount: 2000000, chance: 8, rarity: 'epic', name: 'Celestial NFT + $2M'},
+      {amount: 1000000, chance: 35, rarity: 'rare', name: 'Divine NFT + $1M'},
+      {amount: 500000, chance: 50, rarity: 'common', name: 'Sacred NFT + $500K'}
+    ]
+  },
+  nft_mythic: {
+    name: '👑 NFT Mythic',
+    payments: [
+      {type: 'coins', amount: 10000000, label: '💰 $10,000,000'},
+      {type: 'stars', amount: 1000000, label: '⭐ 1,000,000 Stars'},
+      {type: 'bertons', amount: 100000, label: '🔥 100,000 Tons'}
+    ],
+    rewards: [
+      {amount: 50000000, chance: 2, rarity: 'legendary', name: 'Origin NFT + $50M'},
+      {amount: 30000000, chance: 5, rarity: 'legendary', name: 'Genesis NFT + $30M'},
+      {amount: 20000000, chance: 8, rarity: 'epic', name: 'Prime NFT + $20M'},
+      {amount: 10000000, chance: 35, rarity: 'rare', name: 'Ancient NFT + $10M'},
+      {amount: 5000000, chance: 50, rarity: 'common', name: 'Eternal NFT + $5M'}
+    ]
+  }
+};
+
 const skins = {
   default: {emoji: '👆', name: 'Default', price: 0},
   bronze: {emoji: '🥉', name: 'Bronze Finger', price: 10000},
@@ -1762,7 +1586,6 @@ const skins = {
   lightning: {emoji: '⚡', name: 'Lightning', price: 1500000}
 };
 
-// Upgrade definitions
 const upgrades = {
   tapPower: [
     {level: 1, price: 5000, value: 2},
@@ -1836,7 +1659,6 @@ function updateUI() {
   document.getElementById('tapSkin').innerText = skins[currentSkin].emoji;
 }
 
-// Welcome screen
 function closeWelcome() {
   document.getElementById('welcomeScreen').style.display = 'none';
   save();
@@ -1846,7 +1668,6 @@ if (hasSeenWelcome) {
   document.getElementById('welcomeScreen').style.display = 'none';
 }
 
-// TAB SWITCHING
 function switchTab(tab) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1870,7 +1691,6 @@ function switchTab(tab) {
   }
 }
 
-// Energy regeneration (1 per second)
 setInterval(() => {
   const now = Date.now();
   const elapsed = now - lastEnergyUpdate;
@@ -1884,7 +1704,6 @@ setInterval(() => {
   }
 }, 1000);
 
-// Passive income
 setInterval(() => {
   if (passiveIncome > 0) {
     const now = Date.now();
@@ -1902,7 +1721,6 @@ setInterval(() => {
 
 updateUI();
 
-// TAP SYSTEM
 const tapBtn = document.getElementById('tapBtn');
 let lastTap = 0;
 let tapCombo = 0;
@@ -1954,13 +1772,11 @@ function handleTap(e) {
   const oldCoins = coins;
   coins += gain;
   
-  // Track taps for tasks
   const totalTaps = (parseInt(localStorage.getItem('totalTaps')) || 0) + 1;
   localStorage.setItem('totalTaps', totalTaps);
   updateDailyTaskProgress('tap', 1);
   updateDailyTaskProgress('earn', gain);
   
-  // Level up system
   const oldLevel = level;
   const newLevel = Math.floor(coins / 10000) + 1;
   if (newLevel > level) {
@@ -1987,7 +1803,6 @@ function showFloatingText(text, x, y) {
   setTimeout(() => el.remove(), 1200);
 }
 
-// DAILY CASE
 function openDailyCase() {
   const now = Date.now();
   if (now - lastDailyCase < 86400000) {
@@ -2002,102 +1817,70 @@ function openDailyCase() {
   save();
   
   const rewards = [500, 400, 300, 200, 150, 100, 50];
-  openCaseAnimation('🎁 Daily Case', rewards, 'coins');
+  const winAmount = rewards[Math.floor(Math.random() * rewards.length)];
+  openCaseAnimation('🎁 Daily Case', rewards, winAmount);
 }
 
-// CASE OPTIONS
-let currentCaseType = '';
-
-function showCaseOptions(type) {
-  currentCaseType = type;
-  const popup = document.getElementById('caseSelectionPopup');
-  const title = document.getElementById('caseSelectionTitle');
-  const options = document.getElementById('casePaymentOptions');
+function showCasePreview(caseType) {
+  currentCaseType = caseType;
+  const config = caseConfigs[caseType];
   
-  const caseConfigs = {
-    starter: {
-      name: '📦 Starter Case',
-      payments: [
-        {type: 'coins', amount: 500, label: '💰 $500'},
-        {type: 'stars', amount: 50, label: '⭐ 50 Stars'}
-      ],
-      rewards: [2000, 1500, 1200, 1000, 800, 600, 400, 200]
-    },
-    bronze: {
-      name: '🥉 Bronze Case',
-      payments: [
-        {type: 'coins', amount: 2000, label: '💰 $2,000'},
-        {type: 'stars', amount: 200, label: '⭐ 200 Stars'}
-      ],
-      rewards: [8000, 6000, 5000, 4000, 3000, 2500, 2000, 1000]
-    },
-    silver: {
-      name: '🥈 Silver Case',
-      payments: [
-        {type: 'coins', amount: 10000, label: '💰 $10,000'},
-        {type: 'stars', amount: 1000, label: '⭐ 1,000 Stars'},
-        {type: 'bertons', amount: 100, label: '🔥 100 Tons'}
-      ],
-      rewards: [30000, 25000, 20000, 15000, 12000, 10000, 8000, 5000]
-    },
-    gold: {
-      name: '🥇 Gold Case',
-      payments: [
-        {type: 'coins', amount: 50000, label: '💰 $50,000'},
-        {type: 'stars', amount: 5000, label: '⭐ 5,000 Stars'},
-        {type: 'bertons', amount: 500, label: '🔥 500 Tons'}
-      ],
-      rewards: [150000, 125000, 100000, 80000, 70000, 60000, 50000, 25000]
-    },
-    platinum: {
-      name: '💿 Platinum Case',
-      payments: [
-        {type: 'coins', amount: 200000, label: '💰 $200,000'},
-        {type: 'stars', amount: 20000, label: '⭐ 20,000 Stars'},
-        {type: 'bertons', amount: 2000, label: '🔥 2,000 Tons'}
-      ],
-      rewards: [500000, 400000, 350000, 300000, 250000, 200000, 150000, 100000]
-    },
-    diamond: {
-      name: '💎 Diamond Case',
-      payments: [
-        {type: 'coins', amount: 1000000, label: '💰 $1,000,000'},
-        {type: 'stars', amount: 100000, label: '⭐ 100,000 Stars'},
-        {type: 'bertons', amount: 10000, label: '🔥 10,000 Tons'}
-      ],
-      rewards: [2000000, 1750000, 1500000, 1250000, 1000000, 800000, 600000, 500000]
-    },
-    legendary: {
-      name: '🌟 Legendary Case',
-      payments: [
-        {type: 'coins', amount: 5000000, label: '💰 $5,000,000'},
-        {type: 'stars', amount: 500000, label: '⭐ 500,000 Stars'},
-        {type: 'bertons', amount: 50000, label: '🔥 50,000 Tons'}
-      ],
-      rewards: [10000000, 8000000, 7000000, 6000000, 5000000, 4000000, 3500000, 2500000]
-    }
-  };
+  document.getElementById('previewTitle').innerText = config.name;
   
-  const config = caseConfigs[type];
-  title.innerText = config.name;
+  const rewardsList = document.getElementById('rewardsList');
+  rewardsList.innerHTML = '';
   
-  options.innerHTML = '';
-  config.payments.forEach(payment => {
-    const btn = document.createElement('button');
-    btn.className = 'popup-btn';
-    btn.innerText = payment.label;
-    btn.onclick = () => openCaseWithPayment(config.name, config.rewards, payment);
-    options.appendChild(btn);
+  config.rewards.forEach(reward => {
+    const item = document.createElement('div');
+    item.className = 'reward-item ' + reward.rarity;
+    
+    const name = reward.name || ('$' + reward.amount.toLocaleString());
+    const rarityText = reward.rarity === 'legendary' ? '🌟 Legendary' :
+                      reward.rarity === 'epic' ? '💜 Epic' :
+                      reward.rarity === 'rare' ? '💙 Rare' : '⚪ Common';
+    
+    item.innerHTML = `
+      <div style="font-size:18px;font-weight:700">${name}</div>
+      <div style="font-size:13px;color:#ccc">${rarityText} - ${reward.chance}% chance</div>
+    `;
+    
+    rewardsList.appendChild(item);
   });
   
-  popup.classList.add('active');
+  document.getElementById('casePreviewPopup').classList.add('active');
 }
 
-function openCaseWithPayment(name, rewards, payment) {
+function closeCasePreview() {
+  document.getElementById('casePreviewPopup').classList.remove('active');
+}
+
+function showPaymentOptions() {
+  closeCasePreview();
+  
+  const config = caseConfigs[currentCaseType];
+  const paymentOptions = document.getElementById('paymentOptions');
+  paymentOptions.innerHTML = '';
+  
+  config.payments.forEach(payment => {
+    const btn = document.createElement('button');
+    btn.className = 'payment-option-btn';
+    btn.innerText = payment.label;
+    btn.onclick = () => purchaseCase(payment);
+    paymentOptions.appendChild(btn);
+  });
+  
+  document.getElementById('paymentPopup').classList.add('active');
+}
+
+function closePaymentPopup() {
+  document.getElementById('paymentPopup').classList.remove('active');
+}
+
+function purchaseCase(payment) {
   const currencies = {coins, stars, bertons};
   
   if (currencies[payment.type] < payment.amount) {
-    alert(`❌ Not enough! Need ${payment.label}`);
+    alert('❌ Not enough! Need ' + payment.label);
     return;
   }
   
@@ -2105,41 +1888,47 @@ function openCaseWithPayment(name, rewards, payment) {
   else if (payment.type === 'stars') stars -= payment.amount;
   else if (payment.type === 'bertons') bertons -= payment.amount;
   
-  save();
+  localStorage.setItem('coins', coins);
   updateUI();
-  closeCaseSelection();
+  closePaymentPopup();
   
-  openCaseAnimation(name, rewards, 'coins');
+  const config = caseConfigs[currentCaseType];
+  const winAmount = selectReward(config.rewards);
+  currentWinAmount = winAmount.amount;
+  
+  openCaseAnimation(config.name, config.rewards.map(r => r.amount), winAmount.amount);
 }
 
-function closeCaseSelection() {
-  document.getElementById('caseSelectionPopup').classList.remove('active');
+function selectReward(rewards) {
+  const random = Math.random() * 100;
+  let cumulative = 0;
+  
+  for (const reward of rewards) {
+    cumulative += reward.chance;
+    if (random <= cumulative) return reward;
+  }
+  
+  return rewards[rewards.length - 1];
 }
 
-// CASE OPENING ANIMATION (FIX: Reset animation state)
-function openCaseAnimation(title, rewards, rewardType = 'coins') {
-  const popup = document.getElementById('casePopup');
-  const titleEl = document.getElementById('caseTitle');
+function openCaseAnimation(title, possibleRewards, winAmount) {
+  const popup = document.getElementById('caseOpeningPopup');
+  const titleEl = document.getElementById('openingTitle');
   const reelItems = document.getElementById('caseReelItems');
-  const rewardEl = document.getElementById('caseReward');
-  const claimBtn = document.getElementById('caseClaimBtn');
-  
-  // Reset animation state
-  reelItems.style.transition = 'none';
-  reelItems.style.left = '0px';
-  rewardEl.style.display = 'none';
-  claimBtn.style.display = 'none';
+  const winResult = document.getElementById('winResult');
+  const claimBtn = document.getElementById('claimWinBtn');
   
   titleEl.innerText = title;
+  winResult.style.display = 'none';
+  claimBtn.style.display = 'none';
   popup.classList.add('active');
   
   const items = [];
   for (let i = 0; i < 50; i++) {
-    items.push(rewards[Math.floor(Math.random() * rewards.length)]);
+    items.push(possibleRewards[Math.floor(Math.random() * possibleRewards.length)]);
   }
   
   const winIndex = 42;
-  const winAmount = rewards[Math.floor(Math.random() * rewards.length)];
   items[winIndex] = winAmount;
   
   reelItems.innerHTML = '';
@@ -2150,50 +1939,39 @@ function openCaseAnimation(title, rewards, rewardType = 'coins') {
     reelItems.appendChild(item);
   });
   
-  // Restore transition and start animation
+  reelItems.style.transition = 'none';
+  reelItems.style.transform = 'translateX(0px)';
+  void reelItems.offsetWidth;
+  
   setTimeout(() => {
-    reelItems.style.transition = 'left 3s cubic-bezier(0.25,0.1,0.25,1)';
-    const targetPos = -(winIndex * 100 - 125);
-    reelItems.style.left = targetPos + 'px';
+    reelItems.style.transition = 'transform 3s cubic-bezier(0.25,0.1,0.25,1)';
+    reelItems.style.transform = `translateX(${-(winIndex * 100 - 125)}px)`;
   }, 100);
   
   setTimeout(() => {
-    rewardEl.innerText = '$' + winAmount.toLocaleString() + ' 💰';
-    rewardEl.style.display = 'block';
+    document.getElementById('winAmount').innerText = '$' + winAmount.toLocaleString();
+    winResult.style.display = 'block';
     claimBtn.style.display = 'inline-block';
     
-    if (rewardType === 'coins') coins += winAmount;
-    else if (rewardType === 'stars') stars += winAmount;
-    else if (rewardType === 'bertons') bertons += winAmount;
-    
-    // Track cases opened for tasks
     const casesOpened = (parseInt(localStorage.getItem('casesOpened')) || 0) + 1;
     localStorage.setItem('casesOpened', casesOpened);
     updateDailyTaskProgress('case', 1);
-    
-    save();
-    updateUI();
-    updateLeaderboard();
   }, 3500);
 }
 
-function closeCase() {
-  const popup = document.getElementById('casePopup');
+function claimWin() {
+  coins += currentWinAmount;
+  localStorage.setItem('coins', coins);
+  updateUI();
+  updateLeaderboard();
+  
+  document.getElementById('caseOpeningPopup').classList.remove('active');
+  
   const reelItems = document.getElementById('caseReelItems');
-  
-  // Reset animation completely
   reelItems.style.transition = 'none';
-  reelItems.style.left = '0px';
-  
-  popup.classList.remove('active');
-  
-  // Restore transition for next use
-  setTimeout(() => {
-    reelItems.style.transition = '';
-  }, 50);
+  reelItems.style.transform = 'translateX(0px)';
 }
 
-// EXCHANGE
 function showExchange() {
   document.getElementById('exchangePopup').classList.add('active');
 }
@@ -2228,7 +2006,6 @@ function exchangeAllTokens() {
   alert(`✅ Exchanged $${(amount * 1000).toLocaleString()} for ${amount * 10} BER Tokens!`);
 }
 
-// DEPOSIT
 function showDeposit() {
   document.getElementById('depositPopup').classList.add('active');
 }
@@ -2237,17 +2014,6 @@ function closeDeposit() {
   document.getElementById('depositPopup').classList.remove('active');
 }
 
-function copyAddress(type) {
-  const addressId = type === 'ton' ? 'tonAddress' : 'tonsAddress';
-  const address = document.getElementById(addressId).innerText;
-  navigator.clipboard.writeText(address).then(() => {
-    alert('✅ Address copied to clipboard!');
-  }).catch(() => {
-    alert('❌ Failed to copy address');
-  });
-}
-
-// WITHDRAW
 function showWithdraw() {
   document.getElementById('withdrawPopup').classList.add('active');
 }
@@ -2256,12 +2022,10 @@ function closeWithdraw() {
   document.getElementById('withdrawPopup').classList.remove('active');
 }
 
-// SHOP
 function loadShop() {
   const skinShop = document.getElementById('skinShop');
   const upgradeShop = document.getElementById('upgradeShop');
   
-  // Load skins
   skinShop.innerHTML = '';
   Object.keys(skins).forEach(skinId => {
     const skin = skins[skinId];
@@ -2296,10 +2060,8 @@ function loadShop() {
     skinShop.appendChild(item);
   });
   
-  // Load upgrades
   upgradeShop.innerHTML = '';
   
-  // Tap power upgrade
   if (tapPowerLevel < upgrades.tapPower.length) {
     const upgrade = upgrades.tapPower[tapPowerLevel];
     const item = document.createElement('div');
@@ -2315,7 +2077,6 @@ function loadShop() {
     upgradeShop.appendChild(item);
   }
   
-  // Passive income upgrade
   if (passiveIncomeLevel < upgrades.passiveIncome.length) {
     const upgrade = upgrades.passiveIncome[passiveIncomeLevel];
     const item = document.createElement('div');
@@ -2331,7 +2092,6 @@ function loadShop() {
     upgradeShop.appendChild(item);
   }
   
-  // Max energy upgrade
   if (maxEnergyLevel < upgrades.maxEnergy.length) {
     const upgrade = upgrades.maxEnergy[maxEnergyLevel];
     const item = document.createElement('div');
@@ -2409,7 +2169,6 @@ function buyUpgrade(type) {
   }
 }
 
-// TASKS with categories
 const tasks = {
   social: [
     {id: 101, title: '📱 Join Telegram Channel', reward: 10000, link: 'https://t.me/beroncrypto', icon: '📱'},
@@ -2459,7 +2218,6 @@ function generateDailyTasks() {
     return;
   }
   
-  // Reset daily tasks
   lastDailyTaskReset = now;
   localStorage.setItem('lastDailyTaskReset', lastDailyTaskReset);
   
@@ -2471,7 +2229,6 @@ function generateDailyTasks() {
     {id: 'daily_level', title: '⚡ Gain 1 Level', reward: 15000, target: 1, current: 0, type: 'level', icon: '⚡'}
   ];
   
-  // Select 3 random daily tasks
   dailyTasks = [];
   const shuffled = dailyTaskTemplates.sort(() => Math.random() - 0.5);
   for (let i = 0; i < 3; i++) {
@@ -2518,7 +2275,6 @@ function loadTasks() {
   
   document.getElementById('totalTaskEarnings').innerText = '$' + totalTaskEarnings.toLocaleString();
   
-  // Load daily tasks
   const dailyList = document.getElementById('dailyTaskList');
   if (dailyList) {
     dailyList.innerHTML = '';
@@ -2551,7 +2307,6 @@ function loadTasks() {
     });
   }
   
-  // Load social tasks
   const socialList = document.getElementById('socialTaskList');
   if (socialList) {
     socialList.innerHTML = '';
@@ -2576,7 +2331,6 @@ function loadTasks() {
     });
   }
   
-  // Load achievement tasks
   const achievementList = document.getElementById('achievementTaskList');
   if (achievementList) {
     achievementList.innerHTML = '';
@@ -2602,7 +2356,6 @@ function loadTasks() {
     });
   }
   
-  // Load special tasks
   const specialList = document.getElementById('specialTaskList');
   if (specialList) {
     specialList.innerHTML = '';
@@ -2635,7 +2388,7 @@ function claimDailyTask(taskId) {
   
   coins += task.reward;
   totalTaskEarnings += task.reward;
-  task.current = -1; // Mark as claimed
+  task.current = -1;
   
   localStorage.setItem('totalTaskEarnings', totalTaskEarnings);
   localStorage.setItem('dailyTasks', JSON.stringify(dailyTasks));
@@ -2697,12 +2450,10 @@ function claimAchievement(taskId) {
   alert(`✅ Achievement unlocked! +$${task.reward.toLocaleString()}`);
 }
 
-// Update daily task timer every second
 setInterval(() => {
   updateDailyTaskTimer();
 }, 1000);
 
-// LEADERBOARD
 let currentLeaderboardFilter = 'all';
 
 async function updateLeaderboard() {
@@ -2758,7 +2509,6 @@ async function loadLeaderboard() {
     
     players.sort((a, b) => b.score - a.score);
     
-    // Update user info
     const userIndex = players.findIndex(p => p.name === playerName);
     const userRankEl = document.getElementById('userRank');
     const userScoreEl = document.getElementById('userScore');
@@ -2773,7 +2523,6 @@ async function loadLeaderboard() {
       const medals = ['🥇', '🥈', '🥉'];
       const rankDisplay = i < 3 ? medals[i] : `#${i + 1}`;
       
-      // Calculate rank badge
       let rankBadge = '🥉';
       if (player.score > 5000000) rankBadge = '💎';
       else if (player.score > 1000000) rankBadge = '🏆';
@@ -2798,7 +2547,6 @@ async function loadLeaderboard() {
 
 updateLeaderboard();
 
-// MINES GAME
 let minesGame = null;
 
 function updateMineCount() {
@@ -2927,7 +2675,6 @@ function closeMinesGame() {
   document.getElementById('minesPopup').classList.remove('active');
 }
 
-// COIN FLIP
 let coinFlipGame = null;
 
 function showCoinFlip() {
@@ -3012,7 +2759,6 @@ function closeCoinFlip() {
   coinFlipGame = null;
 }
 
-// DROP GAME
 let dropGame = null;
 
 function startDropGame() {
@@ -3185,7 +2931,6 @@ function closeDropGame() {
   document.getElementById('dropGamePopup').classList.remove('active');
 }
 
-// SNAKE GAME
 let snakeGame = null;
 
 function startSnakeGame() {
